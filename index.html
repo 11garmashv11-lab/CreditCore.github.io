@@ -1,1766 +1,1422 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CreditCore — Дорожная карта проекта</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Прогресс отдела — Панель лидеров</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+/* ═══════════════════════ ROOT ═══════════════════════ */
 :root {
-  --bg: #0a0b0f;
-  --bg2: #0f1117;
-  --bg3: #13151e;
-  --card: #141720;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --accent: #4f8fff;
-  --accent2: #7c3aff;
-  --accent3: #00d4aa;
-  --accent4: #ff6b35;
-  --accent5: #ffd166;
-  --text: #e8eaf0;
-  --text2: #8892a4;
-  --text3: #505870;
-  --glow: rgba(79,143,255,0.15);
-  --glow2: rgba(124,58,255,0.12);
+  --bg:          #080a10;
+  --bg-card:     #0f1118;
+  --bg-card2:    #12151e;
+  --bg-admin:    #090b12;
+  --border:      rgba(204,51,51,.22);
+  --border2:     rgba(204,51,51,.45);
+  --accent:      #cc3333;
+  --accent-d:    #881f1f;
+  --accent-l:    #e04444;
+  --glow:        rgba(204,51,51,.18);
+  --glow2:       rgba(204,51,51,.08);
+  --gold:        #ffd700;
+  --silver:      #c0c0c0;
+  --bronze:      #cd7f32;
+  --text:        #eef0f6;
+  --text-2:      #7a8090;
+  --text-3:      #3a4050;
+  --radius:      16px;
+  --radius-sm:   10px;
 }
-
 *{margin:0;padding:0;box-sizing:border-box}
-
 html{scroll-behavior:smooth}
-
 body{
+  font-family:'Inter',-apple-system,sans-serif;
   background:var(--bg);
   color:var(--text);
-  font-family:'Inter',sans-serif;
-  font-size:15px;
-  line-height:1.7;
+  min-height:100vh;
   overflow-x:hidden;
 }
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--accent-d);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 
-/* ── NOISE TEXTURE ── */
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:0;
-  opacity:.4;
-}
-
-/* ── HERO ── */
-.hero{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:80px 24px 60px;
-  position:relative;
-  overflow:hidden;
-}
-
-.hero-bg{
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,143,255,0.1) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(124,58,255,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 50% at 20% 60%, rgba(0,212,170,0.06) 0%, transparent 50%);
-  pointer-events:none;
-}
-
-.hero-grid{
-  position:absolute;
-  inset:0;
+/* ═══════════════════════ BG GRID ═══════════════════════ */
+.bg-grid{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 70% at 50% 30%, black 0%, transparent 80%);
+    linear-gradient(rgba(204,51,51,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(204,51,51,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%);
+}
+.bg-glow{
+  position:fixed;top:-200px;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;
+  background:radial-gradient(ellipse, rgba(204,51,51,.12) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+  animation:glowPulse 6s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.08)}}
+
+/* ═══════════════════════ HEADER ═══════════════════════ */
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,10,16,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 30px rgba(0,0,0,.5);
+}
+.hdr-inner{
+  max-width:1440px;margin:0 auto;
+  height:62px;display:flex;align-items:center;gap:14px;padding:0 24px;
+  position:relative;z-index:1;
+}
+.hdr-logo{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.hdr-icon{
+  width:36px;height:36px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 0 18px rgba(204,51,51,.4);
+}
+.hdr-title{font-size:18px;font-weight:800;white-space:nowrap;letter-spacing:-.3px}
+.hdr-title span{
+  color:var(--accent);
+  text-shadow:0 0 20px rgba(204,51,51,.5);
+}
+.hdr-controls{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.month-chip{
+  font-size:13px;font-weight:700;color:var(--accent);
+  background:var(--glow);
+  border:1px solid var(--border2);
+  border-radius:8px;padding:5px 13px;white-space:nowrap;
+  text-shadow:0 0 12px rgba(204,51,51,.4);
+}
+
+/* ═══════════════════════ BUTTONS ═══════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 15px;border-radius:8px;
+  font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+  cursor:pointer;transition:all .18s ease;border:none;
+  text-decoration:none;white-space:nowrap;position:relative;overflow:hidden;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0);transition:background .18s;
+  border-radius:inherit;
+}
+.btn:hover::after{background:rgba(255,255,255,.04)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  color:#fff;box-shadow:0 4px 16px rgba(204,51,51,.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(204,51,51,.45)}
+.btn-primary:active{transform:translateY(0)}
+.btn-ghost{
+  background:transparent;color:var(--text-2);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{background:var(--glow);color:var(--text);border-color:var(--border2)}
+.btn-danger{background:transparent;color:#ff4444;border:1px solid rgba(255,68,68,.3)}
+.btn-danger:hover{background:rgba(255,68,68,.1);border-color:#ff4444}
+.btn-gold{
+  background:linear-gradient(135deg,#b8860b,#ffd700);
+  color:#000;font-weight:800;
+  box-shadow:0 4px 16px rgba(255,215,0,.25);
+}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(255,215,0,.4)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:6px}
+.btn-xs{padding:3px 8px;font-size:11px;border-radius:5px}
+
+/* ═══════════════════════ LAYOUT ═══════════════════════ */
+.wrap{max-width:1440px;margin:0 auto;padding:32px 24px;position:relative;z-index:1}
+.sec-label{
+  font-size:10px;font-weight:800;color:var(--text-3);
+  text-transform:uppercase;letter-spacing:2.5px;
+  margin-bottom:18px;display:flex;align-items:center;gap:8px;
+}
+.sec-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+}
+
+/* ═══════════════════════ LEADERBOARD ═══════════════════════ */
+.leaderboard{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px}
+@media(max-width:900px){.leaderboard{grid-template-columns:1fr}}
+
+.leader-card{
+  background:var(--bg-card);
+  border-radius:20px;padding:24px;
+  border:1px solid var(--border);
+  position:relative;overflow:hidden;
+  animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+  transition:transform .25s,box-shadow .25s;
+  cursor:default;
+}
+.leader-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+}
+.leader-card:hover{transform:translateY(-5px)}
+
+/* Rank 1 - Gold */
+.leader-card.r1{
+  background:linear-gradient(145deg,#0f1118,#1b1508);
+  border-color:rgba(255,215,0,.3);
+  box-shadow:0 0 40px rgba(255,215,0,.07);
+}
+.leader-card.r1:hover{box-shadow:0 16px 50px rgba(255,215,0,.15)}
+.leader-card.r1::before{background:linear-gradient(90deg,transparent,rgba(255,215,0,.5),transparent)}
+.leader-card.r1 .leader-glow{
+  position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(255,215,0,.12),transparent 70%);
   pointer-events:none;
 }
+/* Rank 2 - Silver */
+.leader-card.r2{border-color:rgba(192,192,192,.2);box-shadow:0 0 30px rgba(192,192,192,.04)}
+.leader-card.r2:hover{box-shadow:0 16px 44px rgba(192,192,192,.1)}
+/* Rank 3 - Bronze */
+.leader-card.r3{border-color:rgba(205,127,50,.2);box-shadow:0 0 30px rgba(205,127,50,.04)}
+.leader-card.r3:hover{box-shadow:0 16px 44px rgba(205,127,50,.1)}
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background:rgba(79,143,255,0.1);
-  border:1px solid rgba(79,143,255,0.25);
-  border-radius:100px;
-  padding:6px 16px;
-  font-size:12px;
-  font-weight:500;
-  color:var(--accent);
-  letter-spacing:.05em;
-  text-transform:uppercase;
-  margin-bottom:28px;
-  opacity:0;
-  animation:fadeUp .6s .1s forwards;
+.leader-medal{font-size:36px;margin-bottom:6px;display:block;animation:medalFloat 3s ease-in-out infinite}
+.leader-card.r1 .leader-medal{animation-delay:0s}
+.leader-card.r2 .leader-medal{animation-delay:.5s}
+.leader-card.r3 .leader-medal{animation-delay:1s}
+@keyframes medalFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.leader-rank-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);margin-bottom:5px}
+.leader-name{font-size:22px;font-weight:900;margin-bottom:16px;letter-spacing:-.3px}
+.leader-score-badge{
+  position:absolute;top:18px;right:18px;
+  font-size:12px;font-weight:800;
+  padding:4px 10px;border-radius:20px;
 }
+.r1 .leader-score-badge{background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);color:var(--gold)}
+.r2 .leader-score-badge{background:rgba(192,192,192,.1);border:1px solid rgba(192,192,192,.3);color:var(--silver)}
+.r3 .leader-score-badge{background:rgba(205,127,50,.1);border:1px solid rgba(205,127,50,.3);color:var(--bronze)}
 
-.badge-dot{
-  width:6px;height:6px;
-  border-radius:50%;
-  background:var(--accent);
-  animation:pulse 2s infinite;
+.leader-stats{display:flex;flex-direction:column;gap:8px}
+.leader-stat{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--text-2);
+  padding:6px 10px;border-radius:8px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.04);
 }
+.leader-stat b{font-weight:700;color:var(--text)}
 
-@keyframes pulse{
-  0%,100%{opacity:1;transform:scale(1)}
-  50%{opacity:.4;transform:scale(.7)}
-}
+/* ═══════════════════════ EMP CARDS ═══════════════════════ */
+.emp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:36px}
 
-.hero h1{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(42px,8vw,88px);
-  font-weight:800;
-  line-height:1.0;
-  letter-spacing:-.03em;
-  margin-bottom:8px;
-  opacity:0;
-  animation:fadeUp .7s .2s forwards;
-}
-
-.hero h1 span{
-  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.hero-sub{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(18px,3vw,26px);
-  font-weight:600;
-  color:var(--text2);
-  margin-bottom:20px;
-  opacity:0;
-  animation:fadeUp .7s .3s forwards;
-}
-
-.hero-desc{
-  max-width:600px;
-  color:var(--text2);
-  font-size:16px;
-  line-height:1.8;
-  margin-bottom:48px;
-  opacity:0;
-  animation:fadeUp .7s .4s forwards;
-}
-
-.hero-stats{
-  display:flex;
-  gap:48px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-bottom:60px;
-  opacity:0;
-  animation:fadeUp .7s .5s forwards;
-}
-
-.stat{
-  text-align:center;
-}
-
-.stat-val{
-  font-family:'Syne',sans-serif;
-  font-size:32px;
-  font-weight:800;
-  color:var(--text);
-  display:block;
-}
-
-.stat-label{
-  font-size:12px;
-  color:var(--text3);
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  font-weight:500;
-}
-
-.scroll-hint{
-  position:absolute;
-  bottom:32px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  color:var(--text3);
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  opacity:0;
-  animation:fadeUp .7s 1s forwards;
-}
-
-.scroll-line{
-  width:1px;height:40px;
-  background:linear-gradient(var(--accent), transparent);
-  animation:scrollPulse 2s infinite;
-}
-
-@keyframes scrollPulse{
-  0%{transform:scaleY(0);transform-origin:top}
-  50%{transform:scaleY(1);transform-origin:top}
-  51%{transform:scaleY(1);transform-origin:bottom}
-  100%{transform:scaleY(0);transform-origin:bottom}
-}
-
-/* ── SECTION ── */
-.section{
-  padding:80px 24px;
-  max-width:1200px;
-  margin:0 auto;
-}
-
-.section-label{
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  color:var(--accent);
-  margin-bottom:12px;
-}
-
-.section-title{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(28px,4vw,44px);
-  font-weight:800;
-  line-height:1.1;
-  letter-spacing:-.02em;
-  margin-bottom:16px;
-}
-
-.section-desc{
-  color:var(--text2);
-  max-width:560px;
-  font-size:16px;
-  line-height:1.8;
-  margin-bottom:56px;
-}
-
-/* ── PHASE CARDS ── */
-.phases{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  position:relative;
-}
-
-.phases::before{
-  content:'';
-  position:absolute;
-  left:31px;
-  top:40px;
-  bottom:40px;
-  width:2px;
-  background:linear-gradient(var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-  opacity:.3;
-}
-
-.phase{
-  display:grid;
-  grid-template-columns:64px 1fr;
-  gap:0 28px;
-  padding:0 0 48px;
-  opacity:0;
-  transform:translateY(24px);
-  transition:opacity .6s, transform .6s;
-}
-
-.phase.visible{
-  opacity:1;
-  transform:none;
-}
-
-.phase-num{
-  display:flex;
-  align-items:flex-start;
-  padding-top:4px;
-  flex-direction:column;
-  align-items:center;
-  gap:0;
-}
-
-.num-circle{
-  width:64px;height:64px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Syne',sans-serif;
-  font-size:20px;
-  font-weight:800;
-  flex-shrink:0;
-  position:relative;
-  z-index:1;
-}
-
-.phase:nth-child(1) .num-circle{background:rgba(79,143,255,0.15);color:var(--accent);border:1.5px solid rgba(79,143,255,0.4)}
-.phase:nth-child(2) .num-circle{background:rgba(124,58,255,0.15);color:var(--accent2);border:1.5px solid rgba(124,58,255,0.4)}
-.phase:nth-child(3) .num-circle{background:rgba(0,212,170,0.12);color:var(--accent3);border:1.5px solid rgba(0,212,170,0.35)}
-.phase:nth-child(4) .num-circle{background:rgba(255,107,53,0.12);color:var(--accent4);border:1.5px solid rgba(255,107,53,0.35)}
-.phase:nth-child(5) .num-circle{background:rgba(255,209,102,0.12);color:var(--accent5);border:1.5px solid rgba(255,209,102,0.35)}
-
-.phase-body{
+.emp-card{
+  background:var(--bg-card);border-radius:var(--radius);padding:22px;
   border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--card);
-  padding:28px 32px 32px;
+  animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both;
+  transition:transform .22s,box-shadow .22s,border-color .22s;
+  position:relative;overflow:hidden;
+}
+.emp-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  transition:background .22s;
+}
+.emp-card:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,.35);border-color:rgba(204,51,51,.4)}
+.emp-card:hover::before{background:linear-gradient(90deg,transparent,var(--border2),transparent)}
+.emp-card.pulse-upd{animation:cardPulse .6s ease}
+
+.emp-head{display:flex;align-items:center;gap:13px;margin-bottom:20px}
+.emp-avatar{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;flex-shrink:0;
+  border:2px solid transparent;
+  transition:transform .2s,box-shadow .2s;
+}
+.emp-card:hover .emp-avatar{transform:scale(1.06)}
+.emp-name{font-size:16px;font-weight:800;line-height:1.2;letter-spacing:-.2px}
+.emp-place{font-size:11px;color:var(--text-3);margin-top:3px;font-weight:600}
+.emp-place.top3{color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.3)}
+
+.metrics{display:flex;flex-direction:column;gap:14px}
+.metric-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.metric-lbl{font-size:11px;color:var(--text-2);font-weight:600;letter-spacing:.2px}
+.metric-val{font-size:13px;font-weight:800}
+.metric-pct{font-size:10px;color:var(--text-3);margin-left:5px;font-weight:400}
+
+.bar-track{
+  height:8px;background:rgba(255,255,255,.05);
+  border-radius:4px;overflow:hidden;
   position:relative;
-  overflow:hidden;
+}
+.bar-track::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.02) 40px,rgba(255,255,255,.02) 41px);
+}
+.bar-fill{
+  height:100%;border-radius:4px;
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+.bar-fill::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:20px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28));
+  border-radius:0 4px 4px 0;
+}
+.bar-glow{
+  position:absolute;bottom:-4px;left:0;height:8px;border-radius:4px;
+  filter:blur(6px);opacity:.6;transition:width .8s cubic-bezier(.4,0,.2,1);
 }
 
-.phase-body::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  opacity:0;
-  transition:opacity .4s;
+/* stagger delays */
+.emp-card:nth-child(1){animation-delay:.03s}.emp-card:nth-child(2){animation-delay:.06s}
+.emp-card:nth-child(3){animation-delay:.09s}.emp-card:nth-child(4){animation-delay:.12s}
+.emp-card:nth-child(5){animation-delay:.15s}.emp-card:nth-child(6){animation-delay:.18s}
+.emp-card:nth-child(7){animation-delay:.21s}.emp-card:nth-child(8){animation-delay:.24s}
+.emp-card:nth-child(9){animation-delay:.27s}.emp-card:nth-child(10){animation-delay:.30s}
+.emp-card:nth-child(11){animation-delay:.33s}.emp-card:nth-child(12){animation-delay:.36s}
+
+/* ═══════════════════════ ADMIN SECTION ═══════════════════════ */
+.admin-wrap{
+  background:var(--bg-admin);
+  border-top:1px solid var(--border);
+  padding:32px 0;
+  position:relative;z-index:1;
+}
+.admin-inner{max-width:1440px;margin:0 auto;padding:0 24px}
+.admin-hdr{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.admin-badge{
+  background:linear-gradient(135deg,var(--accent),var(--accent-d));
+  color:#fff;font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:5px;
+  text-transform:uppercase;letter-spacing:.8px;
+  box-shadow:0 0 14px rgba(204,51,51,.35);
+}
+.admin-title{font-size:17px;font-weight:900}
+.admin-logout{margin-left:auto}
+
+/* Team stats */
+.team-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+@media(max-width:720px){.team-stats{grid-template-columns:1fr}}
+.tstat{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:14px;padding:18px;position:relative;overflow:hidden;
+  transition:border-color .2s;
+}
+.tstat:hover{border-color:var(--border2)}
+.tstat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-3);margin-bottom:10px;font-weight:800}
+.tstat-val{font-size:28px;font-weight:900;margin-bottom:3px;line-height:1;letter-spacing:-1px}
+.tstat-sub{font-size:11px;color:var(--text-2);margin-bottom:12px}
+.tstat-bar{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.tstat-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* bonus */
+.bonus{
+  background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,180,0,.05));
+  border:1px solid rgba(255,215,0,.3);
+  border-radius:14px;padding:16px 20px;margin-bottom:22px;
+  display:flex;align-items:center;gap:14px;
+  animation:bonusGlow 2.5s ease infinite;
+}
+@keyframes bonusGlow{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.1)}50%{box-shadow:0 0 40px rgba(255,215,0,.2)}}
+.bonus-icon{font-size:28px;animation:medalFloat 2s ease-in-out infinite}
+.bonus-title{font-size:15px;font-weight:800;color:var(--gold)}
+.bonus-sub{font-size:11px;color:var(--text-2);margin-top:3px}
+
+/* ctrl row */
+.ctrl-row{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  margin-bottom:26px;padding:14px 18px;
+  background:var(--bg-card);border-radius:12px;border:1px solid var(--border);
+}
+.ctrl-lbl{font-size:11px;color:var(--text-2);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.spacer{flex:1}
+
+select,input[type=text],input[type=number],input[type=password]{
+  background:var(--bg);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:7px 12px;
+  font-family:'Inter',sans-serif;font-size:13px;outline:none;
+  transition:border-color .18s,box-shadow .18s;
+}
+select:focus,input[type=text]:focus,input[type=number]:focus,input[type=password]:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(204,51,51,.12);
+}
+
+/* edit table */
+.edit-tbl{width:100%;border-collapse:collapse;margin-bottom:16px}
+.edit-tbl thead tr{border-bottom:1px solid var(--border)}
+.edit-tbl th{
+  text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--text-3);padding:8px 12px;font-weight:800;
+}
+.edit-tbl td{padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.035);vertical-align:middle}
+.edit-tbl tr:hover td{background:rgba(255,255,255,.025)}
+.edit-tbl input[type=number]{width:90px;padding:5px 9px;font-size:13px}
+.emp-name-cell{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700}
+.mini-av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+
+/* change pass */
+.change-pass-row{margin-top:20px;padding:16px;background:var(--bg-card);border-radius:12px;border:1px solid var(--border)}
+.change-pass-row details summary{cursor:pointer;font-size:12px;color:var(--text-2);font-weight:600;user-select:none;list-style:none}
+.change-pass-row details summary::-webkit-details-marker{display:none}
+.change-pass-row details summary::before{content:'▶ ';font-size:10px;margin-right:4px;transition:transform .2s}
+.change-pass-row details[open] summary::before{content:'▼ '}
+.pass-fields{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:flex-end}
+.pass-field-grp{display:flex;flex-direction:column;gap:5px}
+.pass-field-lbl{font-size:10px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+
+/* ═══════════════════════ LOGIN MODAL ═══════════════════════ */
+.login-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(8,10,16,.88);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;animation:fadeIn .25s ease;
+}
+.login-box{
+  background:var(--bg-card);
+  border:1px solid var(--border2);
+  border-radius:22px;width:100%;max-width:400px;
+  padding:38px 36px;
+  animation:slideUp .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 0 80px rgba(204,51,51,.15),0 30px 60px rgba(0,0,0,.6);
+  position:relative;overflow:hidden;
+}
+.login-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+}
+.login-glow{
+  position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:300px;height:200px;
+  background:radial-gradient(ellipse,rgba(204,51,51,.2),transparent 70%);
   pointer-events:none;
 }
-
-.phase:nth-child(1) .phase-body::before{background:radial-gradient(ellipse 80% 60% at 0% 0%, rgba(79,143,255,0.05), transparent)}
-.phase:nth-child(2) .phase-body::before{background:radial-gradient(ellipse 80% 60% at 0% 0%, rgba(124,58,255,0.05), transparent)}
-.phase:nth-child(3) .phase-body::before{background:radial-gradient(ellipse 80% 60% at 0% 0%, rgba(0,212,170,0.04), transparent)}
-.phase:nth-child(4) .phase-body::before{background:radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255,107,53,0.04), transparent)}
-.phase:nth-child(5) .phase-body::before{background:radial-gradient(ellipse 80% 60% at 0% 0%, rgba(255,209,102,0.04), transparent)}
-
-.phase:hover .phase-body::before{opacity:1}
-
-.phase-header{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  margin-bottom:20px;
-  gap:16px;
-  flex-wrap:wrap;
+.login-logo{
+  display:flex;flex-direction:column;align-items:center;margin-bottom:32px;gap:12px;
 }
-
-.phase-tag{
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  padding:4px 12px;
-  border-radius:100px;
-  white-space:nowrap;
-}
-
-.phase:nth-child(1) .phase-tag{background:rgba(79,143,255,0.12);color:var(--accent)}
-.phase:nth-child(2) .phase-tag{background:rgba(124,58,255,0.12);color:var(--accent2)}
-.phase:nth-child(3) .phase-tag{background:rgba(0,212,170,0.1);color:var(--accent3)}
-.phase:nth-child(4) .phase-tag{background:rgba(255,107,53,0.1);color:var(--accent4)}
-.phase:nth-child(5) .phase-tag{background:rgba(255,209,102,0.1);color:var(--accent5)}
-
-.phase-title{
-  font-family:'Syne',sans-serif;
-  font-size:22px;
-  font-weight:700;
-  letter-spacing:-.01em;
-  line-height:1.2;
-  margin-bottom:10px;
-}
-
-.phase-desc{
-  color:var(--text2);
-  font-size:14px;
-  line-height:1.75;
-  margin-bottom:24px;
-}
-
-.tasks{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
-  gap:10px;
-}
-
-.task{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  background:rgba(255,255,255,0.03);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:12px 14px;
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.5;
-}
-
-.task-icon{
-  width:20px;height:20px;
-  border-radius:6px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  font-size:11px;
-  margin-top:1px;
-}
-
-.phase:nth-child(1) .task-icon{background:rgba(79,143,255,0.15);color:var(--accent)}
-.phase:nth-child(2) .task-icon{background:rgba(124,58,255,0.15);color:var(--accent2)}
-.phase:nth-child(3) .task-icon{background:rgba(0,212,170,0.12);color:var(--accent3)}
-.phase:nth-child(4) .task-icon{background:rgba(255,107,53,0.12);color:var(--accent4)}
-.phase:nth-child(5) .task-icon{background:rgba(255,209,102,0.12);color:var(--accent5)}
-
-.task strong{color:var(--text);font-weight:500}
-
-/* ── BUREAUS SECTION ── */
-.bureaus-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
-  margin-bottom:40px;
-}
-
-.bureau-card{
-  border:1px solid var(--border);
+.login-icon{
+  width:56px;height:56px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-d));
   border-radius:16px;
-  background:var(--card);
-  padding:28px 24px;
-  position:relative;
-  overflow:hidden;
-  opacity:0;
-  transform:translateY(20px);
-  transition:all .5s;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:0 0 30px rgba(204,51,51,.45);
+  animation:iconGlow 3s ease infinite;
 }
+@keyframes iconGlow{0%,100%{box-shadow:0 0 30px rgba(204,51,51,.45)}50%{box-shadow:0 0 50px rgba(204,51,51,.7)}}
+.login-title{font-size:20px;font-weight:900;text-align:center}
+.login-subtitle{font-size:12px;color:var(--text-2);text-align:center;margin-top:2px}
 
-.bureau-card.visible{opacity:1;transform:none}
-
-.bureau-card:hover{
-  border-color:var(--border2);
-  transform:translateY(-3px);
+.login-field{margin-bottom:16px}
+.login-field-lbl{display:block;font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
+.login-field input{width:100%}
+.login-error{
+  font-size:12px;color:#ff5555;text-align:center;
+  margin-top:-8px;margin-bottom:12px;
+  animation:shakeX .3s ease;
 }
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-btn{width:100%;padding:12px;font-size:15px;border-radius:10px}
 
-.bureau-logo{
-  font-family:'Syne',sans-serif;
-  font-size:20px;
-  font-weight:800;
-  margin-bottom:12px;
+/* ═══════════════════════ GENERIC MODAL ═══════════════════════ */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(6px);z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;animation:fadeIn .2s ease;
 }
-
-.bureau-logo.eq{color:#2196F3}
-.bureau-logo.ex{color:#FF5722}
-.bureau-logo.tu{color:#4CAF50}
-
-.bureau-desc{
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.65;
-  margin-bottom:16px;
+.modal{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:22px;width:100%;max-width:940px;
+  max-height:88vh;overflow-y:auto;
+  animation:slideUp .3s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 30px 80px rgba(0,0,0,.6);
 }
-
-.bureau-link{
-  font-size:12px;
-  color:var(--text3);
-  font-family:'Inter',monospace;
+.modal-sm{max-width:440px}
+.modal-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 26px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--bg-card);z-index:10;
+  border-radius:22px 22px 0 0;
 }
-
-/* ── TECH STACK ── */
-.tech-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
-  gap:14px;
+.modal-ttl{font-size:17px;font-weight:800}
+.modal-body{padding:26px}
+.close-btn{
+  width:32px;height:32px;border-radius:8px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text-2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;line-height:1;transition:all .18s;font-family:'Inter',sans-serif;
 }
+.close-btn:hover{background:var(--glow);color:var(--text);border-color:var(--border2)}
 
-.tech-card{
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--card);
-  padding:18px 20px;
-  opacity:0;
-  transform:translateY(16px);
-  transition:all .4s;
+/* analytics */
+.filters{
+  display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;
+  padding:16px;background:rgba(255,255,255,.025);
+  border-radius:12px;border:1px solid var(--border);
 }
+.filter-grp{display:flex;flex-direction:column;gap:5px}
+.filter-lbl{font-size:10px;color:var(--text-3);font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+.chart-box{position:relative;height:260px;margin-bottom:20px}
+.sub-ttl{font-size:14px;font-weight:800;margin-bottom:12px}
 
-.tech-card.visible{opacity:1;transform:none}
+.best-tbl{width:100%;border-collapse:collapse}
+.best-tbl th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);padding:7px 12px;border-bottom:1px solid var(--border);font-weight:800}
+.best-tbl td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+.best-tbl tr:first-child td{color:var(--gold);font-weight:700}
+.best-tbl tr:nth-child(2) td{color:var(--silver)}
+.best-tbl tr:nth-child(3) td{color:var(--bronze)}
 
-.tech-card:hover{
-  border-color:rgba(79,143,255,0.3);
-  background:rgba(79,143,255,0.05);
+/* form */
+.f-group{margin-bottom:16px}
+.f-lbl{display:block;font-size:11px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
+.f-input{width:100%}
+.f-row{display:flex;gap:10px;justify-content:flex-end}
+
+/* confirm / prompt */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadeIn .18s ease}
+.confirm-box{
+  background:var(--bg-card);border:1px solid var(--border2);
+  border-radius:18px;padding:30px;width:100%;max-width:390px;
+  animation:slideUp .22s cubic-bezier(.22,1,.36,1);
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
 }
+.confirm-ttl{font-size:17px;font-weight:800;margin-bottom:8px}
+.confirm-txt{font-size:13px;color:var(--text-2);margin-bottom:22px;line-height:1.6}
+.confirm-acts{display:flex;gap:10px;justify-content:flex-end}
 
-.tech-category{
-  font-size:10px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--text3);
-  font-weight:600;
-  margin-bottom:8px;
+/* toast */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--bg-card2);border:1px solid var(--border);
+  border-radius:12px;padding:11px 18px;
+  font-size:13px;font-weight:600;z-index:9999;
+  animation:toastIn .3s cubic-bezier(.22,1,.36,1);
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 8px 30px rgba(0,0,0,.5);
 }
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.toast.ok{border-color:rgba(68,204,68,.4);color:#55dd55}
+.toast.err{border-color:rgba(255,68,68,.45);color:#ff5555}
+.toast.inf{border-color:var(--border);color:var(--text)}
 
-.tech-name{
-  font-family:'Syne',sans-serif;
-  font-size:16px;
-  font-weight:700;
-  color:var(--text);
-  margin-bottom:4px;
+/* ═══════════════════════ UTILS ═══════════════════════ */
+.hidden{display:none!important}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:24px 0}
+.empty{text-align:center;padding:48px 20px;color:var(--text-3)}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.empty-txt{font-size:13px}
+
+/* ═══════════════════════ KEYFRAMES ═══════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardPulse{
+  0%{box-shadow:0 0 0 0 rgba(204,51,51,.6)}
+  50%{box-shadow:0 0 0 12px rgba(204,51,51,0)}
+  100%{box-shadow:0 0 0 0 rgba(204,51,51,0)}
 }
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-.tech-note{
-  font-size:12px;
-  color:var(--text3);
-  line-height:1.5;
+/* ── GOLD SPARKLE BAR ── */
+.bar-gold-wrap{position:relative;height:20px;display:flex;align-items:center}
+.bar-gold-fill{
+  height:8px;width:100%;border-radius:4px;background:#ffd700;
+  position:relative;overflow:visible;
+  box-shadow:0 0 14px rgba(255,215,0,.6), 0 0 4px rgba(255,215,0,.9);
 }
-
-/* ── PRICING ── */
-.pricing-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
-  gap:20px;
+.bar-gold-fill::before{
+  /* shimmer sweep */
+  content:'';
+  position:absolute;top:0;left:-40%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  animation:goldSweep 1.8s ease-in-out infinite;
+  border-radius:4px;
 }
-
-.price-card{
-  border:1px solid var(--border);
-  border-radius:20px;
-  background:var(--card);
-  padding:32px 28px;
-  position:relative;
-  overflow:hidden;
-  opacity:0;
-  transform:translateY(20px);
-  transition:all .5s;
-}
-
-.price-card.visible{opacity:1;transform:none}
-
-.price-card.featured{
-  border-color:rgba(79,143,255,0.4);
-  background:linear-gradient(135deg, rgba(79,143,255,0.08) 0%, rgba(124,58,255,0.06) 100%);
-}
-
-.price-card.featured::before{
-  content:'ПОПУЛЯРНЫЙ';
+.bar-star{
   position:absolute;
-  top:16px;right:16px;
-  font-size:9px;
-  font-weight:700;
-  letter-spacing:.12em;
-  color:var(--accent);
-  background:rgba(79,143,255,0.15);
-  border:1px solid rgba(79,143,255,0.3);
-  border-radius:100px;
-  padding:3px 10px;
+  top:50%;transform:translateY(-58%);
+  font-size:22px;line-height:1;
+  animation:starRun 2s cubic-bezier(.33,0,.66,1) infinite;
+  filter:
+    drop-shadow(0 0 4px #fff)
+    drop-shadow(0 0 10px #ffe566)
+    drop-shadow(0 0 22px #ffd700)
+    drop-shadow(0 0 40px rgba(255,200,0,.9));
+  pointer-events:none;
+  z-index:10;
 }
-
-.plan-name{
-  font-family:'Syne',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  color:var(--text2);
-  margin-bottom:12px;
+@keyframes goldSweep{
+  0%{left:-40%}
+  100%{left:120%}
 }
-
-.plan-price{
-  font-family:'Syne',sans-serif;
-  font-size:44px;
-  font-weight:800;
-  color:var(--text);
-  line-height:1;
-  margin-bottom:4px;
+@keyframes starRun{
+  0%  {left:-6%; opacity:0;  transform:translateY(-58%) scale(.6)}
+  10% {opacity:1;            transform:translateY(-58%) scale(1.2)}
+  20% {                      transform:translateY(-58%) scale(1)}
+  88% {opacity:1}
+  100%{left:106%;opacity:0;  transform:translateY(-58%) scale(.7)}
 }
-
-.plan-period{
-  font-size:13px;
-  color:var(--text3);
-  margin-bottom:24px;
+.bar-gold-glow{
+  position:absolute;bottom:-5px;left:0;right:0;height:8px;
+  background:#ffd700;border-radius:4px;filter:blur(8px);opacity:.5;
+  animation:glowPulse 2s ease-in-out infinite;
 }
-
-.plan-features{
-  list-style:none;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.plan-features li{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.5;
-}
-
-.plan-features li::before{
-  content:'✓';
-  color:var(--accent3);
-  font-weight:700;
-  flex-shrink:0;
-  margin-top:1px;
-}
-
-/* ── BUDGET TABLE ── */
-.budget-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:32px;
-}
-
-.budget-table th{
-  text-align:left;
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--text3);
-  font-weight:600;
-  padding:12px 16px;
-  border-bottom:1px solid var(--border);
-}
-
-.budget-table td{
-  padding:14px 16px;
-  border-bottom:1px solid rgba(255,255,255,0.04);
-  font-size:14px;
-  color:var(--text2);
-}
-
-.budget-table td:first-child{color:var(--text);font-weight:500}
-
-.budget-table td:last-child{
-  color:var(--accent);
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:15px;
-}
-
-.budget-table tr:last-child td{
-  color:var(--text);
-  font-weight:700;
-  font-size:15px;
-  border-top:1px solid var(--border);
-  border-bottom:none;
-}
-
-.budget-table tr:last-child td:last-child{
-  color:var(--accent3);
-  font-size:18px;
-}
-
-/* ── COMPETITORS ── */
-.comp-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
-  gap:20px;
-}
-
-.comp-card{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--card);
-  padding:24px;
-  opacity:0;
-  transform:translateY(16px);
-  transition:all .5s;
-}
-
-.comp-card.visible{opacity:1;transform:none}
-
-.comp-name{
-  font-family:'Syne',sans-serif;
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-
-.comp-price{
-  font-size:13px;
-  color:var(--accent);
-  font-weight:600;
-  margin-bottom:12px;
-}
-
-.comp-features{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.comp-feat{
-  font-size:13px;
-  color:var(--text2);
-  display:flex;
-  gap:8px;
-  align-items:flex-start;
-}
-
-.comp-feat::before{content:'›';color:var(--text3);font-weight:700}
-
-/* ── TIMELINE ── */
-.timeline-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-}
-
-.tl-card{
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:var(--card);
-  padding:20px 18px;
-  position:relative;
-  opacity:0;
-  transform:translateY(16px);
-  transition:all .5s;
-}
-
-.tl-card.visible{opacity:1;transform:none}
-
-.tl-months{
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  font-weight:600;
-  margin-bottom:10px;
-}
-
-.tl-card:nth-child(1) .tl-months{color:var(--accent)}
-.tl-card:nth-child(2) .tl-months{color:var(--accent2)}
-.tl-card:nth-child(3) .tl-months{color:var(--accent3)}
-.tl-card:nth-child(4) .tl-months{color:var(--accent4)}
-
-.tl-title{
-  font-family:'Syne',sans-serif;
-  font-size:15px;
-  font-weight:700;
-  margin-bottom:10px;
-  line-height:1.3;
-}
-
-.tl-items{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.tl-item{
-  font-size:12px;
-  color:var(--text3);
-  display:flex;
-  gap:7px;
-  line-height:1.4;
-}
-
-.tl-item::before{content:'—';color:var(--border2)}
-
-/* ── RISKS ── */
-.risks-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
-  gap:16px;
-}
-
-.risk-card{
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--card);
-  padding:20px 22px;
-  display:flex;
-  gap:16px;
-  align-items:flex-start;
-  opacity:0;
-  transform:translateY(12px);
-  transition:all .4s;
-}
-
-.risk-card.visible{opacity:1;transform:none}
-
-.risk-icon{
-  width:40px;height:40px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  flex-shrink:0;
-}
-
-.risk-high .risk-icon{background:rgba(255,107,53,0.12)}
-.risk-med .risk-icon{background:rgba(255,209,102,0.1)}
-.risk-low .risk-icon{background:rgba(0,212,170,0.1)}
-
-.risk-title{
-  font-family:'Syne',sans-serif;
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:5px;
-}
-
-.risk-desc{
-  font-size:12px;
-  color:var(--text3);
-  line-height:1.55;
-}
-
-.risk-level{
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  padding:2px 8px;
-  border-radius:100px;
-  margin-left:auto;
-  align-self:flex-start;
-  flex-shrink:0;
-}
-
-.risk-high .risk-level{background:rgba(255,107,53,0.12);color:var(--accent4)}
-.risk-med .risk-level{background:rgba(255,209,102,0.1);color:var(--accent5)}
-.risk-low .risk-level{background:rgba(0,212,170,0.1);color:var(--accent3)}
-
-/* ── ALTERNATIVES ── */
-.alt-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
-  gap:16px;
-}
-
-.alt-card{
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:var(--card);
-  padding:22px 24px;
-  opacity:0;
-  transform:translateY(14px);
-  transition:all .4s;
-}
-
-.alt-card.visible{opacity:1;transform:none}
-
-.alt-name{
-  font-family:'Syne',sans-serif;
-  font-size:16px;
-  font-weight:700;
-  margin-bottom:8px;
-  color:var(--accent);
-}
-
-.alt-desc{
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.6;
-  margin-bottom:12px;
-}
-
-.alt-pros{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.alt-pro{
-  font-size:12px;
-  color:var(--text3);
-  display:flex;
-  gap:7px;
-}
-
-.alt-pro::before{content:'✓';color:var(--accent3);font-weight:700}
-
-/* ── FOOTER ── */
-.footer{
-  border-top:1px solid var(--border);
-  padding:48px 24px;
-  text-align:center;
-}
-
-.footer-logo{
-  font-family:'Syne',sans-serif;
-  font-size:24px;
-  font-weight:800;
-  color:var(--text);
-  margin-bottom:8px;
-}
-
-.footer-note{
-  font-size:13px;
-  color:var(--text3);
-  max-width:480px;
-  margin:0 auto;
-  line-height:1.7;
-}
-
-/* ── DIVIDER ── */
-.divider{
-  height:1px;
-  background:linear-gradient(90deg, transparent, var(--border), transparent);
-  margin:0;
-}
-
-/* ── NAV ── */
-.nav{
-  position:fixed;
-  top:0;left:0;right:0;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:16px 32px;
-  background:rgba(10,11,15,0.8);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-}
-
-.nav-logo{
-  font-family:'Syne',sans-serif;
-  font-size:18px;
-  font-weight:800;
-  color:var(--text);
-}
-
-.nav-logo span{color:var(--accent)}
-
-.nav-links{
-  display:flex;
-  gap:28px;
-  list-style:none;
-}
-
-.nav-links a{
-  font-size:13px;
-  color:var(--text3);
-  text-decoration:none;
-  font-weight:500;
-  transition:color .2s;
-  letter-spacing:.01em;
-}
-
-.nav-links a:hover{color:var(--text)}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
-}
-
-/* ── WIDE CARD ── */
-.wide-card{
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--card);
-  padding:32px;
-  margin-bottom:20px;
-  opacity:0;
-  transform:translateY(16px);
-  transition:all .5s;
-}
-
-.wide-card.visible{opacity:1;transform:none}
-
-.wide-card-title{
-  font-family:'Syne',sans-serif;
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:14px;
-  color:var(--text);
-}
-
-.info-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
-  gap:20px;
-}
-
-.info-item{
-  padding:20px 22px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:rgba(255,255,255,0.02);
-}
-
-.info-item-title{
-  font-weight:600;
-  font-size:14px;
-  color:var(--text);
-  margin-bottom:8px;
-}
-
-.info-item-text{
-  font-size:13px;
-  color:var(--text2);
-  line-height:1.65;
-}
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .bureaus-grid{grid-template-columns:1fr}
-  .timeline-grid{grid-template-columns:repeat(2,1fr)}
-  .nav-links{display:none}
-}
-
-@media(max-width:600px){
-  .phases::before{display:none}
-  .phase{grid-template-columns:1fr}
-  .phase-num{display:none}
-  .timeline-grid{grid-template-columns:1fr}
-  .hero-stats{gap:24px}
-}
-</style>
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-logo">Credit<span>Core</span></div>
-  <ul class="nav-links">
-    <li><a href="#plan">Этапы</a></li>
-    <li><a href="#bureaus">Бюро</a></li>
-    <li><a href="#tech">Технологии</a></li>
-    <li><a href="#pricing">Подписки</a></li>
-    <li><a href="#budget">Бюджет</a></li>
-    <li><a href="#timeline">Timeline</a></li>
-  </ul>
-</nav>
+<!-- Background -->
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="badge"><span class="badge-dot"></span>Дорожная карта проекта 2025–2026</div>
-  <h1>Credit<span>Core</span></h1>
-  <p class="hero-sub">Платформа мониторинга кредитных историй</p>
-  <p class="hero-desc">Полный план создания B2C-платформы кредитного мониторинга на базе данных Equifax, Experian и TransUnion — от юридической регистрации до коммерческого запуска</p>
-  <div class="hero-stats">
-    <div class="stat">
-      <span class="stat-val">$30</span>
-      <span class="stat-label">в месяц — цена подписки</span>
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║              HEADER                 ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-logo">
+      <div class="hdr-icon">🏆</div>
+      <div class="hdr-title">Прогресс <span>отдела</span></div>
     </div>
-    <div class="stat">
-      <span class="stat-val">3</span>
-      <span class="stat-label">кредитных бюро</span>
-    </div>
-    <div class="stat">
-      <span class="stat-val">12 мес</span>
-      <span class="stat-label">до запуска</span>
-    </div>
-    <div class="stat">
-      <span class="stat-val">$250K</span>
-      <span class="stat-label">стартовый бюджет</span>
+    <div class="hdr-controls">
+      <div class="month-chip" id="monthChip">—</div>
+      <button class="btn btn-gold" id="btnLogin" onclick="openLogin()">🔑 Войти</button>
+      <button class="btn btn-ghost hidden" id="btnLogout" onclick="doLogout()">🚪 Выйти</button>
     </div>
   </div>
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    SCROLL
+</header>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║               MAIN                  ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<main>
+  <div class="wrap">
+    <div class="sec-label">🏅 Таблица лидеров</div>
+    <div class="leaderboard" id="leaderboardEl"></div>
+    <div class="sec-label">👥 Сотрудники</div>
+    <div class="emp-grid" id="empGridEl"></div>
   </div>
-</section>
+</main>
 
-<div class="divider"></div>
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║            ADMIN PANEL              ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<section id="adminSection" class="admin-wrap hidden">
+  <div class="admin-inner">
+    <div class="admin-hdr">
+      <span class="admin-badge">ADMIN</span>
+      <span class="admin-title">Панель управления</span>
+      <button class="btn btn-danger btn-sm admin-logout" onclick="doLogout()">Выйти из панели</button>
+    </div>
 
-<!-- PLAN SECTION -->
-<section class="section" id="plan">
-  <div class="section-label">Стратегия реализации</div>
-  <h2 class="section-title">5 фаз от идеи до запуска</h2>
-  <p class="section-desc">Пошаговый план, учитывающий юридические, технические и коммерческие аспекты создания платформы уровня IdentityIQ и SmartCredit</p>
+    <div class="sec-label">Общий прогресс команды</div>
+    <div id="bonusBanner" class="hidden"></div>
+    <div class="team-stats" id="teamStatsEl"></div>
+    <div class="divider"></div>
 
-  <div class="phases">
+    <div class="ctrl-row">
+      <span class="ctrl-lbl">Месяц:</span>
+      <select id="monthSelect" onchange="handleMonthChange(this.value)"></select>
+      <button class="btn btn-ghost btn-sm" onclick="showCreateMonthDialog()">＋ Месяц</button>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="openAnalytics()">📊 Аналитика</button>
+      <button class="btn btn-ghost btn-sm" onclick="doExportCSV()">⬇ CSV</button>
+      <button class="btn btn-ghost btn-sm" id="toggleAdminBtn" onclick="toggleAdmin()">🎬 Презентация</button>
+      <button class="btn btn-ghost btn-sm" onclick="openAddEmployee()">👤 Добавить</button>
+      <button class="btn btn-ghost btn-sm" onclick="doExportBackup()">💾 Бэкап</button>
+      <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+        📂 Импорт
+        <input type="file" accept=".json" onchange="doImportBackup(event)" style="display:none">
+      </label>
+      <button class="btn btn-danger btn-sm" onclick="confirmResetMonth()">🗑 Сброс</button>
+    </div>
 
-    <!-- PHASE 1 -->
-    <div class="phase">
-      <div class="phase-num">
-        <div class="num-circle">01</div>
-      </div>
-      <div class="phase-body">
-        <div class="phase-header">
-          <div>
-            <div class="phase-title">Юридическая и партнёрская основа</div>
+    <div class="sec-label">Редактирование показателей</div>
+    <div id="editTableEl"></div>
+
+    <!-- Change password -->
+    <div class="change-pass-row">
+      <details>
+        <summary>⚙️ Изменить учётные данные администратора</summary>
+        <div class="pass-fields">
+          <div class="pass-field-grp">
+            <span class="pass-field-lbl">Логин</span>
+            <input type="text" id="newLogin" placeholder="Новый логин" style="width:160px">
           </div>
-          <span class="phase-tag">Месяцы 1–3</span>
-        </div>
-        <p class="phase-desc">Прежде чем писать код — необходимо создать юридический фундамент. Доступ к кредитным данным потребителей США строго регулируется FCRA, GLBA и CCPA. Это самый сложный и важный этап — без него невозможна никакая техническая работа.</p>
-        <div class="tasks">
-          <div class="task"><div class="task-icon">⚖</div><div><strong>Регистрация</strong> компании в США — LLC или C-Corp. EIN (налоговый номер), юридический адрес</div></div>
-          <div class="task"><div class="task-icon">📄</div><div><strong>FCRA-комплаенс</strong> — получение "Permissible Purpose" для запроса кредитных отчётов</div></div>
-          <div class="task"><div class="task-icon">🤝</div><div><strong>Переговоры с бюро</strong> — заявка как Reseller/Distributor в Equifax, Experian, TransUnion</div></div>
-          <div class="task"><div class="task-icon">🔐</div><div><strong>Data Use Agreement</strong> — соглашение о хранении и использовании данных потребителей</div></div>
-          <div class="task"><div class="task-icon">🛡</div><div><strong>Security Audit</strong> — бюро проверяют инфраструктуру безопасности партнёра</div></div>
-          <div class="task"><div class="task-icon">👔</div><div><strong>CISO назначение</strong> — директор по информационной безопасности (требование GLBA)</div></div>
-          <div class="task"><div class="task-icon">📋</div><div><strong>Privacy Policy, ToS</strong> — документы, адаптированные под GLBA, FCRA, CCPA</div></div>
-          <div class="task"><div class="task-icon">💼</div><div><strong>Страхование</strong> — профессиональная ответственность + защита от киберрисков (до $1 млн)</div></div>
-          <div class="task"><div class="task-icon">🔎</div><div><strong>Выбор API-агрегатора</strong> — анализ Array, CRS Credit API, MeridianLink, Bloom Credit</div></div>
-          <div class="task"><div class="task-icon">🖥</div><div><strong>VDI-инфраструктура</strong> — виртуальные рабочие столы для защиты данных при офшорной разработке</div></div>
-        </div>
-        <div style="margin-top:20px;padding:16px 20px;background:rgba(255,107,53,0.06);border:1px solid rgba(255,107,53,0.2);border-radius:10px;">
-          <p style="font-size:13px;color:var(--accent4);font-weight:600;margin-bottom:4px">⚠ Критический момент</p>
-          <p style="font-size:13px;color:var(--text2)">Прямая аккредитация в каждом бюро занимает от 3 до 12+ месяцев. Оптимальный путь на старте — <strong style="color:var(--text)">API-агрегатор</strong> (Array или CRS), который уже имеет прямые контракты с бюро и позволяет запустить за 4–6 недель.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHASE 2 -->
-    <div class="phase">
-      <div class="phase-num">
-        <div class="num-circle">02</div>
-      </div>
-      <div class="phase-body">
-        <div class="phase-header">
-          <div>
-            <div class="phase-title">Проектирование и базовая разработка</div>
+          <div class="pass-field-grp">
+            <span class="pass-field-lbl">Новый пароль</span>
+            <input type="password" id="newPass" placeholder="Новый пароль" style="width:160px">
           </div>
-          <span class="phase-tag">Месяцы 3–6</span>
-        </div>
-        <p class="phase-desc">Построение микросервисной архитектуры, интеграция с API бюро в тестовой среде, разработка ядра платформы. Микросервисный подход обеспечивает независимое масштабирование и изолирует потенциальные сбои.</p>
-        <div class="tasks">
-          <div class="task"><div class="task-icon">⚙</div><div><strong>Микросервисная архитектура</strong> — отдельные адаптеры для каждого бюро (Equifax, Experian, TU)</div></div>
-          <div class="task"><div class="task-icon">🗄</div><div><strong>PostgreSQL + Redis</strong> — БД с AES-256 шифрованием + кэш для снижения частоты запросов к API</div></div>
-          <div class="task"><div class="task-icon">☁</div><div><strong>AWS / GCP</strong> — облачная инфраструктура с Geo-шардингом данных</div></div>
-          <div class="task"><div class="task-icon">🔗</div><div><strong>API интеграция Sandbox</strong> — тестирование soft pull запросов во всех трёх бюро</div></div>
-          <div class="task"><div class="task-icon">🧹</div><div><strong>ETL-процессор</strong> — нормализация XML/JSON данных из разных форматов бюро в единый стандарт</div></div>
-          <div class="task"><div class="task-icon">🔀</div><div><strong>Tri-Merge алгоритм</strong> — дедупликация кредитных линий (fuzzy matching по SSN, счетам, датам)</div></div>
-          <div class="task"><div class="task-icon">⚛</div><div><strong>React + TypeScript</strong> — фронтенд дашборда с отображением данных 3 бюро</div></div>
-          <div class="task"><div class="task-icon">📊</div><div><strong>VantageScore + FICO</strong> — интеграция обеих скоринговых моделей, объяснение разницы</div></div>
-          <div class="task"><div class="task-icon">🔐</div><div><strong>2FA + KYC верификация</strong> — аутентификация личности при регистрации</div></div>
-          <div class="task"><div class="task-icon">🌐</div><div><strong>API Gateway</strong> — Kong или AWS API Gateway с токенизацией для офшорной команды</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHASE 3 -->
-    <div class="phase">
-      <div class="phase-num">
-        <div class="num-circle">03</div>
-      </div>
-      <div class="phase-body">
-        <div class="phase-header">
-          <div>
-            <div class="phase-title">Платёжная система и подписки</div>
+          <div class="pass-field-grp">
+            <span class="pass-field-lbl">Подтверждение</span>
+            <input type="password" id="confirmPass" placeholder="Повторите пароль" style="width:160px">
           </div>
-          <span class="phase-tag">Месяцы 5–8</span>
+          <button class="btn btn-primary btn-sm" onclick="changeCredentials()">Сохранить</button>
         </div>
-        <p class="phase-desc">Внедрение биллинговой системы для управления рекуррентными платежами. Архитектурный выбор: Stripe как платёжный процессор + Chargebee как слой управления подписками — отраслевой золотой стандарт.</p>
-        <div class="tasks">
-          <div class="task"><div class="task-icon">💳</div><div><strong>Stripe Payments</strong> — процессинг карт, токенизация, PCI DSS compliant</div></div>
-          <div class="task"><div class="task-icon">📦</div><div><strong>Chargebee</strong> — управление подписками, пропорциональные начисления, dunning логика</div></div>
-          <div class="task"><div class="task-icon">🎁</div><div><strong>Free Trial</strong> — 7–30 дней пробного периода для привлечения пользователей</div></div>
-          <div class="task"><div class="task-icon">⬆</div><div><strong>Upgrade / Downgrade</strong> — плавный переход между тарифами с пересчётом</div></div>
-          <div class="task"><div class="task-icon">🔔</div><div><strong>Dunning автоматизация</strong> — умные повторные попытки при неуспешном платеже</div></div>
-          <div class="task"><div class="task-icon">📑</div><div><strong>Revenue Recognition</strong> — ASC 606 / IFRS 15 через Chargebee (автоматически)</div></div>
-          <div class="task"><div class="task-icon">🌍</div><div><strong>Tax Automation</strong> — расчёт налогов по геолокации пользователя (TaxJar интеграция)</div></div>
-          <div class="task"><div class="task-icon">📈</div><div><strong>Аналитика подписок</strong> — LTV, Churn, MRR, CAC дашборд для бизнеса</div></div>
-        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║           LOGIN MODAL               ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div class="login-overlay hidden" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-glow"></div>
+    <div class="login-logo">
+      <div class="login-icon">🔑</div>
+      <div>
+        <div class="login-title">Вход в панель</div>
+        <div class="login-subtitle">Только для администраторов</div>
       </div>
     </div>
+    <div class="login-field">
+      <label class="login-field-lbl">Логин</label>
+      <input type="text" id="loginInput" placeholder="Введите логин"
+        onkeydown="if(event.key==='Enter')document.getElementById('passInput').focus()">
+    </div>
+    <div class="login-field">
+      <label class="login-field-lbl">Пароль</label>
+      <input type="password" id="passInput" placeholder="Введите пароль"
+        onkeydown="if(event.key==='Enter')submitLogin()">
+    </div>
+    <div class="login-error hidden" id="loginError">Неверный логин или пароль</div>
+    <button class="btn btn-primary login-btn" onclick="submitLogin()">Войти в панель</button>
+  </div>
+</div>
 
-    <!-- PHASE 4 -->
-    <div class="phase">
-      <div class="phase-num">
-        <div class="num-circle">04</div>
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║          ANALYTICS MODAL            ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div class="overlay hidden" id="analyticsOverlay">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-ttl">📊 Аналитика за период</span>
+      <button class="close-btn" onclick="closeAnalytics()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="filters">
+        <div class="filter-grp">
+          <span class="filter-lbl">С месяца</span>
+          <select id="aFrom" onchange="renderAnalytics()"></select>
+        </div>
+        <div class="filter-grp">
+          <span class="filter-lbl">По месяц</span>
+          <select id="aTo" onchange="renderAnalytics()"></select>
+        </div>
+        <div class="filter-grp">
+          <span class="filter-lbl">Сотрудник</span>
+          <select id="aEmp" onchange="renderAnalytics()">
+            <option value="">Все</option>
+          </select>
+        </div>
       </div>
-      <div class="phase-body">
-        <div class="phase-header">
-          <div>
-            <div class="phase-title">Премиум-функции и конкурентные преимущества</div>
+      <div class="chart-box"><canvas id="chartContracts"></canvas></div>
+      <div class="chart-box"><canvas id="chartAmount"></canvas></div>
+      <div class="divider"></div>
+      <div class="sub-ttl">🏅 Лучшие за период</div>
+      <div id="bestTableEl"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║         ADD EMPLOYEE MODAL          ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div class="overlay hidden" id="addEmpOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-hdr">
+      <span class="modal-ttl">👤 Новый сотрудник</span>
+      <button class="close-btn" onclick="closeAddEmployee()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="f-group">
+        <label class="f-lbl">Имя сотрудника</label>
+        <input type="text" id="newEmpName" class="f-input" placeholder="Например: Настя"
+          onkeydown="if(event.key==='Enter')confirmAddEmployee()">
+      </div>
+      <div class="f-row">
+        <button class="btn btn-ghost" onclick="closeAddEmployee()">Отмена</button>
+        <button class="btn btn-primary" onclick="confirmAddEmployee()">Добавить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ JS ════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── CONSTANTS ─── */
+const TARGETS  = { contracts: 20, amount: 30000, smart: 15 };
+const WEIGHTS  = { contracts: 0.35, amount: 0.50, smart: 0.15 };
+const STOR_KEY = 'dept_kpi_v4';
+const CRED_KEY = 'dept_admin_creds';
+const SESS_KEY = 'dept_admin_sess';
+
+const MONTH_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                  'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const COLORS   = ['#cc3333','#aa44cc','#3388cc','#33aabb','#cc8833',
+                  '#5577ee','#aa3377','#33cc88','#cc5533','#7744cc'];
+const DEF_NAMES= ['Настя','Жулдыз','Лера','Даша','Аня'];
+
+/* ─── STATE ─── */
+let S = { employeesMeta:[], months:{}, activeMonth:nowKey() };
+let adminVisible = true;
+let aCharts = {};
+
+/* ─── UTILS ─── */
+function nowKey(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+function keyToLabel(k){ if(!k)return''; const[y,m]=k.split('-'); return `${MONTH_RU[+m-1]} ${y}`; }
+function uid(){ return 'e'+Math.random().toString(36).slice(2,10); }
+function pct(v,t){ return (v/t)*100; }
+function capPct(v,t){ return Math.min(pct(v,t),100); }
+function barColor(p){
+  if(p>=100) return '#ffd700';
+  if(p>=80)  return '#44dd44';
+  if(p>=60)  return '#88dd44';
+  if(p>=40)  return '#ddbb00';
+  if(p>=20)  return '#dd6622';
+  return '#dd2222';
+}
+function fmtAmt(v){
+  if(v>=1000000) return `$${(v/1000000).toFixed(2)}M`;
+  if(v>=1000)    return `$${(v/1000).toFixed(1)}k`;
+  return `$${v}`;
+}
+// 1 contract ≈ $2500 dollar-equivalent → single combined value for ranking
+const CONTRACT_VALUE = 2500;
+function dollarRank(emp){
+  return emp.contracts * CONTRACT_VALUE + emp.amount;
+}
+function sortEmps(arr){
+  return [...arr].sort((a,b)=>{
+    const da=dollarRank(a), db=dollarRank(b);
+    if(db!==da) return db-da;           // primary: combined $ value
+    return b.smart-a.smart;             // tiebreaker: Smart Credit
+  });
+}
+function getMeta(id){ return S.employeesMeta.find(e=>e.id===id)||{}; }
+function weightedScore(emp){
+  // Display badge only — uses capped % with weights 0.35/0.50/0.15
+  return capPct(emp.contracts,TARGETS.contracts)*WEIGHTS.contracts
+        +capPct(emp.amount,   TARGETS.amount)   *WEIGHTS.amount
+        +capPct(emp.smart,    TARGETS.smart)    *WEIGHTS.smart;
+}
+
+function getMonthEmps(mk){
+  if(!S.months[mk]) S.months[mk]={employees:[]};
+  const ex=S.months[mk].employees||[];
+  S.employeesMeta.forEach(m=>{
+    if(!ex.find(e=>e.id===m.id)) ex.push({id:m.id,contracts:0,amount:0,smart:0});
+  });
+  S.months[mk].employees=ex;
+  return ex;
+}
+function getSortedForMonth(mk){
+  const emps=getMonthEmps(mk);
+  return sortEmps(emps.map(e=>({...e,...getMeta(e.id),...e})));
+}
+function teamStats(mk){
+  const emps=getSortedForMonth(mk);
+  const n=emps.length||1;
+  const tot=f=>emps.reduce((s,e)=>s+e[f],0);
+  return{
+    contracts:{v:tot('contracts'),t:TARGETS.contracts*n},
+    amount:   {v:tot('amount'),   t:TARGETS.amount*n},
+    smart:    {v:tot('smart'),    t:TARGETS.smart*n}
+  };
+}
+
+/* ─── AUTH ─── */
+function getCreds(){
+  try{ const r=localStorage.getItem(CRED_KEY); if(r)return JSON.parse(r); }catch(e){}
+  return {login:'admin',password:'admin123'};
+}
+function saveCreds(c){ localStorage.setItem(CRED_KEY,JSON.stringify(c)); }
+function isAuthed(){ return sessionStorage.getItem(SESS_KEY)==='1'; }
+function setAuthed(v){ v?sessionStorage.setItem(SESS_KEY,'1'):sessionStorage.removeItem(SESS_KEY); }
+
+function updateAuthUI(){
+  const ok=isAuthed();
+  document.getElementById('adminSection').classList.toggle('hidden',!ok);
+  document.getElementById('btnLogin').classList.toggle('hidden',ok);
+  document.getElementById('btnLogout').classList.toggle('hidden',!ok);
+  if(ok && !adminVisible) document.getElementById('adminSection').style.display='none';
+}
+
+function openLogin(){
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginInput').value='';
+  document.getElementById('passInput').value='';
+  document.getElementById('loginError').classList.add('hidden');
+  setTimeout(()=>document.getElementById('loginInput').focus(),80);
+}
+function closeLogin(){ document.getElementById('loginOverlay').classList.add('hidden'); }
+
+function submitLogin(){
+  const login=document.getElementById('loginInput').value.trim();
+  const pass =document.getElementById('passInput').value;
+  const creds=getCreds();
+  if(login===creds.login && pass===creds.password){
+    setAuthed(true);
+    closeLogin();
+    updateAuthUI();
+    if(adminVisible){
+      document.getElementById('adminSection').style.display='';
+      renderTeamStats();
+      renderMonthSelect();
+      renderEditTable();
+    }
+    toast('Добро пожаловать, администратор!','ok');
+  } else {
+    const errEl=document.getElementById('loginError');
+    errEl.classList.remove('hidden');
+    errEl.style.animation='none';
+    void errEl.offsetWidth;
+    errEl.style.animation='shakeX .3s ease';
+    document.getElementById('passInput').value='';
+    document.getElementById('passInput').focus();
+  }
+}
+
+function doLogout(){
+  setAuthed(false);
+  adminVisible=true;
+  updateAuthUI();
+  toast('Вы вышли из панели управления','inf');
+}
+
+function changeCredentials(){
+  const nl=document.getElementById('newLogin').value.trim();
+  const np=document.getElementById('newPass').value;
+  const cp=document.getElementById('confirmPass').value;
+  if(!nl){toast('Введите логин','err');return;}
+  if(!np){toast('Введите пароль','err');return;}
+  if(np!==cp){toast('Пароли не совпадают','err');return;}
+  saveCreds({login:nl,password:np});
+  document.getElementById('newLogin').value='';
+  document.getElementById('newPass').value='';
+  document.getElementById('confirmPass').value='';
+  toast('Учётные данные обновлены','ok');
+}
+
+/* ─── STORAGE ─── */
+function save(){ localStorage.setItem(STOR_KEY,JSON.stringify(S)); }
+function load(){
+  try{ const r=localStorage.getItem(STOR_KEY); if(r) S={...S,...JSON.parse(r)}; }catch(e){}
+  if(!S.months[S.activeMonth]) S.months[S.activeMonth]={employees:[]};
+  if(!S.employeesMeta.length){
+    DEF_NAMES.forEach((name,i)=>{
+      const id=uid();
+      S.employeesMeta.push({id,name,avatarColor:COLORS[i%COLORS.length]});
+      getMonthEmps(S.activeMonth);
+    });
+    save();
+  }
+}
+
+/* ─── RENDER: HEADER ─── */
+function renderHeader(){
+  document.getElementById('monthChip').textContent=keyToLabel(S.activeMonth);
+}
+
+/* ─── RENDER: LEADERBOARD ─── */
+function renderLeaderboard(){
+  const sorted=getSortedForMonth(S.activeMonth);
+  const top3=sorted.slice(0,3);
+  const medals=['🥇','🥈','🥉'];
+  const ranks=['1-е место','2-е место','3-е место'];
+  const cls=['r1','r2','r3'];
+  const el=document.getElementById('leaderboardEl');
+  if(!top3.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">🏆</div><div class="empty-txt">Нет данных</div></div>';
+    return;
+  }
+  el.innerHTML=top3.map((emp,i)=>{
+    const sc=weightedScore(emp).toFixed(0);
+    const cp=pct(emp.contracts,TARGETS.contracts);
+    const ap=pct(emp.amount,TARGETS.amount);
+    const sp=pct(emp.smart,TARGETS.smart);
+    return `
+      <div class="leader-card ${cls[i]}" style="animation-delay:${i*.12}s">
+        <div class="leader-glow"></div>
+        <span class="leader-medal">${medals[i]}</span>
+        <div class="leader-rank-lbl">${ranks[i]}</div>
+        <div class="leader-name">${emp.name||'—'}</div>
+        <div class="leader-score-badge">${sc}%</div>
+        <div class="leader-stats">
+          <div class="leader-stat">
+            <span>📋 Контракты</span>
+            <b>${emp.contracts} / ${TARGETS.contracts} <span style="opacity:.5;font-weight:400">(${cp.toFixed(0)}%)</span></b>
           </div>
-          <span class="phase-tag">Месяцы 6–9</span>
-        </div>
-        <p class="phase-desc">Именно эти функции отличают ведущие платформы от простых агрегаторов данных. Успех определяется не только визуализацией — но и инструментами активного управления кредитным профилем.</p>
-        <div class="tasks">
-          <div class="task"><div class="task-icon">🌑</div><div><strong>Dark Web Monitoring</strong> — сканирование даркнета на предмет утечки SSN и паролей</div></div>
-          <div class="task"><div class="task-icon">🏠</div><div><strong>Смена адреса алерт</strong> — мониторинг мошеннических изменений почтового адреса</div></div>
-          <div class="task"><div class="task-icon">⚡</div><div><strong>Real-time Alerts</strong> — мгновенные уведомления о новых запросах и изменениях в отчётах</div></div>
-          <div class="task"><div class="task-icon">⚔</div><div><strong>Dispute Hub (e-OSCAR)</strong> — автоматическая подача споров через Metro 2 формат</div></div>
-          <div class="task"><div class="task-icon">🧮</div><div><strong>Score Simulator</strong> — что будет со скором при погашении карты / открытии счёта</div></div>
-          <div class="task"><div class="task-icon">📅</div><div><strong>Best Pay-Down Date</strong> — оптимальная дата досрочного погашения для максимизации балла</div></div>
-          <div class="task"><div class="task-icon">🏘</div><div><strong>Rent Reporting</strong> — добавление арендных платежей в кредитную историю</div></div>
-          <div class="task"><div class="task-icon">🛡</div><div><strong>ID Theft Insurance</strong> — страховка от кражи личности на $1 млн (партнёрство)</div></div>
-          <div class="task"><div class="task-icon">📱</div><div><strong>Mobile App</strong> — iOS + Android с push-уведомлениями</div></div>
-          <div class="task"><div class="task-icon">🤖</div><div><strong>AI Insights</strong> — персонализированные рекомендации по улучшению кредитного профиля</div></div>
-        </div>
-        <div style="margin-top:20px;padding:16px 20px;background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.2);border-radius:10px;">
-          <p style="font-size:13px;color:var(--accent3);font-weight:600;margin-bottom:4px">💡 Ключевой дифференциатор</p>
-          <p style="font-size:13px;color:var(--text2)">Dispute Hub через стандарт <strong style="color:var(--text)">e-OSCAR / Metro 2</strong> — возможность автоматически подавать споры напрямую в кредитные бюро. Это то, за что пользователи готовы платить $30/мес.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- PHASE 5 -->
-    <div class="phase">
-      <div class="phase-num">
-        <div class="num-circle">05</div>
-      </div>
-      <div class="phase-body">
-        <div class="phase-header">
-          <div>
-            <div class="phase-title">Аудит безопасности, тестирование и запуск</div>
+          <div class="leader-stat">
+            <span>💰 Сумма</span>
+            <b>${fmtAmt(emp.amount)} / ${fmtAmt(TARGETS.amount)} <span style="opacity:.5;font-weight:400">(${ap.toFixed(0)}%)</span></b>
           </div>
-          <span class="phase-tag">Месяцы 9–12</span>
+          <div class="leader-stat">
+            <span>⭐ Smart Credit</span>
+            <b>${emp.smart} / ${TARGETS.smart} <span style="opacity:.5;font-weight:400">(${sp.toFixed(0)}%)</span></b>
+          </div>
         </div>
-        <p class="phase-desc">Заключительный этап перед публичным релизом. Бюро проводят строгую проверку соответствия перед выдачей production-доступа. Нельзя пропускать ни один шаг — нарушение ведёт к отключению и штрафам.</p>
-        <div class="tasks">
-          <div class="task"><div class="task-icon">🔒</div><div><strong>SOC 2 Type II</strong> — независимый аудит безопасности (требование кредитных бюро)</div></div>
-          <div class="task"><div class="task-icon">🧪</div><div><strong>Penetration Testing</strong> — пентест системы, проверка шифрования и обработки PII</div></div>
-          <div class="task"><div class="task-icon">⚙</div><div><strong>Load Testing</strong> — нагрузочное тестирование микросервисов (имитация 10 000+ пользователей)</div></div>
-          <div class="task"><div class="task-icon">✅</div><div><strong>FCRA Compliance Review</strong> — юридический аудит процесса сбора согласий</div></div>
-          <div class="task"><div class="task-icon">🧩</div><div><strong>QA End-to-End</strong> — тест credit freezes, fraud alerts, невалидных SSN</div></div>
-          <div class="task"><div class="task-icon">🚀</div><div><strong>Beta-запуск</strong> — ограниченная аудитория, сбор обратной связи</div></div>
-          <div class="task"><div class="task-icon">📣</div><div><strong>SEO + Paid Ads</strong> — "check all 3 credit bureaus", "credit monitoring service"</div></div>
-          <div class="task"><div class="task-icon">🤝</div><div><strong>Партнёрства</strong> — ипотечные брокеры, автодилеры, лизинговые компании</div></div>
-          <div class="task"><div class="task-icon">💸</div><div><strong>Affiliate Program</strong> — реферальная программа для снижения CAC</div></div>
-          <div class="task"><div class="task-icon">📞</div><div><strong>Поддержка</strong> — FAQ, чат-бот, колл-центр (требование бюро)</div></div>
+      </div>`;
+  }).join('');
+}
+
+/* ─── RENDER: EMPLOYEE CARDS ─── */
+function renderEmpGrid(){
+  const sorted=getSortedForMonth(S.activeMonth);
+  const el=document.getElementById('empGridEl');
+  if(!sorted.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-txt">Нет сотрудников. Администратор может добавить их через панель.</div></div>';
+    return;
+  }
+  const medals=['🥇','🥈','🥉'];
+  el.innerHTML=sorted.map((emp,i)=>{
+    const meta=getMeta(emp.id);
+    const color=meta.avatarColor||'#cc3333';
+    const init=(meta.name||'?').charAt(0).toUpperCase();
+    const cp=pct(emp.contracts,TARGETS.contracts);
+    const ap=pct(emp.amount,TARGETS.amount);
+    const sp=pct(emp.smart,TARGETS.smart);
+    const dr=fmtAmt(dollarRank(emp));  // combined $ value hint
+    const placeLabel=i<3?`${medals[i]} ${i+1} место`:`${i+1} место`;
+    return `
+      <div class="emp-card" id="card-${emp.id}">
+        <div class="emp-head">
+          <div class="emp-avatar" style="background:${color}18;border-color:${color}45;color:${color}">${init}</div>
+          <div>
+            <div class="emp-name">${meta.name||'—'}</div>
+            <div class="emp-place${i<3?' top3':''}">${placeLabel} <span style="opacity:.55;font-size:10px;font-weight:500">≈ ${dr}</span></div>
+          </div>
         </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- BUREAUS SECTION -->
-<section class="section" id="bureaus">
-  <div class="section-label">Партнёры по данным</div>
-  <h2 class="section-title">Три кредитных бюро</h2>
-  <p class="section-desc">Equifax, Experian и TransUnion контролируют инфраструктуру кредитной системы США с совокупным годовым доходом $13.3 млрд. Доступ к их данным — ключевой актив платформы.</p>
-
-  <div class="bureaus-grid">
-    <div class="bureau-card">
-      <div class="bureau-logo eq">Equifax</div>
-      <div class="bureau-desc">Наиболее открытый для партнёрств — предлагает <strong>Consumer Engagement Suite (CES API)</strong> с multi-bureau отчётами. Поддерживает B2B2C-модель, позволяя получать данные всех трёх бюро сразу через один endpoint. Лучший выбор для MVP.</div>
-      <div class="bureau-link">developer.equifax.com</div>
-    </div>
-    <div class="bureau-card">
-      <div class="bureau-logo ex">Experian</div>
-      <div class="bureau-desc">Предлагает <strong>Experian Connect API</strong> и корпоративный API Hub. Глобальное присутствие. Важно учитывать GDPR при работе с европейскими пользователями. Experian IdentityWorks — прямой конкурент платформы.</div>
-      <div class="bureau-link">experian.com/partner-solutions</div>
-    </div>
-    <div class="bureau-card">
-      <div class="bureau-logo tu">TransUnion</div>
-      <div class="bureau-desc">Нет публичного открытого API — работает через <strong>партнёрскую программу</strong> (Reseller/Distributor). Интеграция через посредников (iSoftpull API) или прямые XML/batch-каналы. Требует строжайшей аккредитации.</div>
-      <div class="bureau-link">transunion.com/business</div>
-    </div>
-  </div>
-
-  <div style="margin-top:32px">
-    <div class="section-label">Альтернативный путь — API-агрегаторы</div>
-    <h3 style="font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:12px">Быстрый старт через посредников</h3>
-    <p class="section-desc" style="margin-bottom:28px">Вместо прямой аккредитации в каждом бюро (которая занимает 6–12 месяцев) — использовать специализированные B2B2C агрегаторы, уже имеющие контракты и SOC 2 сертификацию.</p>
-    <div class="alt-grid">
-      <div class="alt-card">
-        <div class="alt-name">Array</div>
-        <div class="alt-desc">Лидер встраиваемых финансовых сервисов. Готовые веб-компоненты + API. Запуск кредитного мониторинга за 4–6 недель.</div>
-        <div class="alt-pros">
-          <div class="alt-pro">My Credit Manager (визуализация)</div>
-          <div class="alt-pro">Offers Engine (монетизация лидов)</div>
-          <div class="alt-pro">Identity Protect (защита личности)</div>
-          <div class="alt-pro">PMPM или Per Transaction модель</div>
+        <div class="metrics">
+          ${metricRow('📋 Контракты',emp.contracts,TARGETS.contracts,cp,'')}
+          ${metricRow('💰 Сумма',fmtAmt(emp.amount),TARGETS.amount,ap,fmtAmt(TARGETS.amount))}
+          ${metricRow('⭐ Smart Credit',emp.smart,TARGETS.smart,sp,'')}
         </div>
-      </div>
-      <div class="alt-card">
-        <div class="alt-name">CRS Credit API</div>
-        <div class="alt-desc">Единый API с SOC 2 Type II. Синхронный доступ ко всем трём бюро. Soft & Hard pull. Готовые SDK для Python, Ruby, JavaScript.</div>
-        <div class="alt-pros">
-          <div class="alt-pro">Tri-merge отчёты в одном запросе</div>
-          <div class="alt-pro">OFAC / санкционный скрининг</div>
-          <div class="alt-pro">Верификация личности встроена</div>
+      </div>`;
+  }).join('');
+}
+
+function metricRow(lbl,val,target,p,tDisplay){
+  const isGold = p >= 100;
+  const col = barColor(p);
+  const pdRaw = p.toFixed(0);          // actual % (can be >100)
+  const pdBar = Math.min(p,100);       // bar visual capped at 100%
+  const ts = tDisplay || target;
+
+  if(isGold){
+    return `
+      <div>
+        <div class="metric-top">
+          <span class="metric-lbl">${lbl}</span>
+          <span class="metric-val" style="color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,.5)">
+            ${val}<span class="metric-pct" style="color:#ffd700">/ ${ts} (${pdRaw}%) ✦</span>
+          </span>
         </div>
-      </div>
-      <div class="alt-card">
-        <div class="alt-name">MeridianLink</div>
-        <div class="alt-desc">Запатентованная технология слияния — дедупликация данных 3 бюро и консолидированный отчёт за ~11 секунд. Форматы MISMO 2.3.1 и 3.4.</div>
-        <div class="alt-pros">
-          <div class="alt-pro">Автоматическая дедупликация tradelines</div>
-          <div class="alt-pro">128-bit SSL шифрование</div>
-          <div class="alt-pro">Сотни реселлеров в сети</div>
+        <div class="bar-track" style="overflow:visible;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2)">
+          <div class="bar-gold-wrap" style="width:100%">
+            <div class="bar-gold-fill" style="width:100%">
+              <span class="bar-star">⭐</span>
+            </div>
+            <div class="bar-gold-glow"></div>
+          </div>
         </div>
+      </div>`;
+  }
+  return `
+    <div>
+      <div class="metric-top">
+        <span class="metric-lbl">${lbl}</span>
+        <span class="metric-val" style="color:${col}">${val}<span class="metric-pct">/ ${ts} (${pdRaw}%)</span></span>
       </div>
-      <div class="alt-card">
-        <div class="alt-name">Bloom Credit</div>
-        <div class="alt-desc">Уникальный продукт Bloom+ — учёт альтернативных данных (коммунальные платежи, банковские транзакции) для повышения скора пользователей.</div>
-        <div class="alt-pros">
-          <div class="alt-pro">API для получения И передачи данных</div>
-          <div class="alt-pro">Alternative Consumer Permissioned Data</div>
-          <div class="alt-pro">Мощный дифференциатор на рынке</div>
-        </div>
+      <div class="bar-track" style="position:relative">
+        <div class="bar-fill" style="width:${pdBar}%;background:${col}"></div>
+        <div class="bar-glow" style="width:${pdBar}%;background:${col}"></div>
       </div>
-    </div>
-  </div>
-</section>
+    </div>`;
+}
 
-<div class="divider"></div>
+/* ─── RENDER: TEAM STATS ─── */
+function renderTeamStats(){
+  const ts=teamStats(S.activeMonth);
+  const items=[
+    {lbl:'Контракты',weight:'35%',...ts.contracts,fmt:v=>v},
+    {lbl:'Сумма контрактов',weight:'50%',...ts.amount,fmt:fmtAmt},
+    {lbl:'Smart Credit',weight:'15%',...ts.smart,fmt:v=>v}
+  ];
+  document.getElementById('teamStatsEl').innerHTML=items.map(it=>{
+    const p=(it.v/it.t)*100;
+    const col=barColor(p);
+    return `
+      <div class="tstat">
+        <div class="tstat-lbl">${it.lbl} <span style="color:var(--accent);font-size:9px">(вес ${it.weight})</span></div>
+        <div class="tstat-val" style="color:${col}">${it.fmt(it.v)}</div>
+        <div class="tstat-sub">из ${it.fmt(it.t)} — ${p.toFixed(0)}% плана</div>
+        <div class="tstat-bar"><div class="tstat-fill" style="width:${Math.min(p,100)}%;background:${col}"></div></div>
+      </div>`;
+  }).join('');
 
-<!-- COMPETITORS -->
-<section class="section">
-  <div class="section-label">Анализ конкурентов</div>
-  <h2 class="section-title">Лидеры рынка</h2>
-  <p class="section-desc">Компании, которые нужно изучить детально — и взять лучшее от каждого</p>
-  <div class="comp-grid">
-    <div class="comp-card">
-      <div class="comp-name">IdentityIQ</div>
-      <div class="comp-price">$7.44 – $31.49 / мес</div>
-      <div class="comp-features">
-        <div class="comp-feat">3 бюро + прямые отношения (Direct Bureau Power)</div>
-        <div class="comp-feat">Мониторинг даркнета и SSN</div>
-        <div class="comp-feat">Страховка от кражи личности $1 млн на семью</div>
-        <div class="comp-feat">Мониторинг смены адреса</div>
-        <div class="comp-feat">Гибкая линейка тарифов (5 планов)</div>
-      </div>
-    </div>
-    <div class="comp-card">
-      <div class="comp-name">SmartCredit</div>
-      <div class="comp-price">~$19.95 – $29.95 / мес</div>
-      <div class="comp-features">
-        <div class="comp-feat">Запатентованные Action Buttons (USPTO 7,818,228)</div>
-        <div class="comp-feat">ScoreTracker — Auto/Insurance/Hiring скоры</div>
-        <div class="comp-feat">ScoreBuilder — 120-дневный план улучшения</div>
-        <div class="comp-feat">ScoreBoost — оптимальная дата погашения</div>
-        <div class="comp-feat">Прямая связь с кредиторами без телефона</div>
-      </div>
-    </div>
-    <div class="comp-card">
-      <div class="comp-name">myFICO</div>
-      <div class="comp-price">$19.95 – $39.95 / мес</div>
-      <div class="comp-features">
-        <div class="comp-feat">Реальные FICO скоры (те, что видит банк)</div>
-        <div class="comp-feat">FICO Auto Score, Bankcard Score, Mortgage</div>
-        <div class="comp-feat">3 бюро side-by-side сравнение</div>
-        <div class="comp-feat">История изменений скора</div>
-        <div class="comp-feat">Лучший для покупателей ипотеки/авто</div>
-      </div>
-    </div>
-    <div class="comp-card">
-      <div class="comp-name">Credit Karma</div>
-      <div class="comp-price">Бесплатно</div>
-      <div class="comp-features">
-        <div class="comp-feat">Только TransUnion + Equifax (2 из 3)</div>
-        <div class="comp-feat">VantageScore (не FICO)</div>
-        <div class="comp-feat">Монетизация — агрессивная лидогенерация</div>
-        <div class="comp-feat">Купленa Intuit за $7.1 млрд</div>
-        <div class="comp-feat">Слабая защита личности — возможность дифференциации</div>
-      </div>
-    </div>
-  </div>
-</section>
+  const avg=(ts.contracts.v/ts.contracts.t*WEIGHTS.contracts + ts.amount.v/ts.amount.t*WEIGHTS.amount + ts.smart.v/ts.smart.t*WEIGHTS.smart)*100;
+  const bon=document.getElementById('bonusBanner');
+  if(avg>=100){
+    bon.className='bonus';
+    bon.innerHTML=`<div class="bonus-icon">🎉</div><div><div class="bonus-title">Команда заработала общий бонус!</div><div class="bonus-sub">Все взвешенные показатели выполнены. Поздравляем!</div></div>`;
+  } else {
+    bon.className='hidden';
+  }
+}
 
-<div class="divider"></div>
+/* ─── RENDER: MONTH SELECT ─── */
+function renderMonthSelect(){
+  const months=[...new Set([...Object.keys(S.months),S.activeMonth])].sort();
+  const sel=document.getElementById('monthSelect');
+  sel.innerHTML=months.map(m=>`<option value="${m}" ${m===S.activeMonth?'selected':''}>${keyToLabel(m)}</option>`).join('');
+}
 
-<!-- TECH SECTION -->
-<section class="section" id="tech">
-  <div class="section-label">Технический стек</div>
-  <h2 class="section-title">Архитектура платформы</h2>
-  <p class="section-desc">Микросервисная архитектура с событийно-ориентированной обработкой данных, обеспечивающая независимое масштабирование и максимальную безопасность</p>
-
-  <div class="tech-grid">
-    <div class="tech-card"><div class="tech-category">Бэкенд</div><div class="tech-name">Node.js / NestJS</div><div class="tech-note">Микросервисы, REST API, высокая производительность</div></div>
-    <div class="tech-card"><div class="tech-category">Альтернатива</div><div class="tech-name">Python FastAPI</div><div class="tech-note">Для ML-модулей и аналитических сервисов</div></div>
-    <div class="tech-card"><div class="tech-category">База данных</div><div class="tech-name">PostgreSQL</div><div class="tech-note">Профили пользователей, история запросов, шифрование AES-256</div></div>
-    <div class="tech-card"><div class="tech-category">Кэширование</div><div class="tech-name">Redis</div><div class="tech-note">Кэш кредитных отчётов — снижает частоту и стоимость API-запросов</div></div>
-    <div class="tech-card"><div class="tech-category">Облако</div><div class="tech-name">AWS / GCP</div><div class="tech-note">Geo-шардинг, данные не покидают юрисдикцию США</div></div>
-    <div class="tech-card"><div class="tech-category">API-шлюз</div><div class="tech-name">Kong Gateway</div><div class="tech-note">Rate limiting, токенизация для офшорных разработчиков</div></div>
-    <div class="tech-card"><div class="tech-category">Фронтенд</div><div class="tech-name">React + TypeScript</div><div class="tech-note">Дашборд с данными 3 бюро, история скора, алерты</div></div>
-    <div class="tech-card"><div class="tech-category">Мобильные</div><div class="tech-name">React Native</div><div class="tech-note">iOS + Android с push-уведомлениями о изменениях</div></div>
-    <div class="tech-card"><div class="tech-category">Платежи</div><div class="tech-name">Stripe + Chargebee</div><div class="tech-note">Процессинг + управление подписками (золотой стандарт SaaS)</div></div>
-    <div class="tech-card"><div class="tech-category">Безопасность</div><div class="tech-name">VDI Infrastructure</div><div class="tech-note">Виртуальные рабочие столы — данные не скачиваются на устройства разработчиков</div></div>
-    <div class="tech-card"><div class="tech-category">Шифрование</div><div class="tech-name">AES-256 + TLS 1.3</div><div class="tech-note">Данные в покое и при передаче. Требование всех 3 бюро</div></div>
-    <div class="tech-card"><div class="tech-category">Сертификация</div><div class="tech-name">SOC 2 Type II</div><div class="tech-note">Обязательный аудит безопасности (AICPA). Без него — нет production API</div></div>
-    <div class="tech-card"><div class="tech-category">Споры</div><div class="tech-name">e-OSCAR / Metro 2</div><div class="tech-note">Автоматическая отправка ACDV пакетов в кредитные бюро</div></div>
-    <div class="tech-card"><div class="tech-category">Очереди</div><div class="tech-name">RabbitMQ / SQS</div><div class="tech-note">Асинхронная обработка фоновых задач обновления отчётов</div></div>
-    <div class="tech-card"><div class="tech-category">Мониторинг</div><div class="tech-name">Datadog / Sentry</div><div class="tech-note">Отслеживание ошибок, производительность API, алерты</div></div>
-  </div>
-
-  <div style="margin-top:40px">
-    <div class="wide-card" style="opacity:1;transform:none">
-      <div class="wide-card-title">🔀 Критический алгоритм: Tri-Merge дедупликация</div>
-      <p style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:16px">Одна кредитная карта может быть записана как "Bank of America" в Experian и "BofA" в TransUnion с разными датами обновления. Без дедупликации — баланс пользователя удвоится и исказит DTI ratio.</p>
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="info-item-title">Fuzzy Matching алгоритм</div>
-          <div class="info-item-text">Кросс-проверка по SSN, хэшам номеров счетов, балансам, лимитам, датам открытия и паттернам платежей</div>
-        </div>
-        <div class="info-item">
-          <div class="info-item-title">Joint Accounts</div>
-          <div class="info-item-text">Параметры DBR_JOINT_INC_DEBT — решение о включении совместных обязательств супругов в профиль основного заявителя</div>
-        </div>
-        <div class="info-item">
-          <div class="info-item-title">Сохранение уникальных меток</div>
-          <div class="info-item-text">После слияния дубликатов — все уникальные просрочки, зафиксированные только одним бюро, сохраняются в объединённом отчёте</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- PRICING SECTION -->
-<section class="section" id="pricing">
-  <div class="section-label">Монетизация</div>
-  <h2 class="section-title">Модель подписки</h2>
-  <p class="section-desc">Четыре уровня с ориентацией на Premium план в $29.99 — именно он обеспечивает основную выручку при разумной марже</p>
-  <div class="pricing-grid">
-    <div class="price-card">
-      <div class="plan-name">Free</div>
-      <div class="plan-price">$0</div>
-      <div class="plan-period">навсегда</div>
-      <ul class="plan-features">
-        <li>1 бюро на выбор</li>
-        <li>Обновление раз в 3 месяца</li>
-        <li>Базовый кредитный скор</li>
-        <li>Ограниченные алерты</li>
-      </ul>
-    </div>
-    <div class="price-card">
-      <div class="plan-name">Basic</div>
-      <div class="plan-price">$9<span style="font-size:22px">.99</span></div>
-      <div class="plan-period">в месяц</div>
-      <ul class="plan-features">
-        <li>2 бюро (TU + Equifax)</li>
-        <li>Обновление раз в месяц</li>
-        <li>Email алерты</li>
-        <li>Score history (6 мес)</li>
-        <li>Базовые инсайты</li>
-      </ul>
-    </div>
-    <div class="price-card featured">
-      <div class="plan-name">Premium</div>
-      <div class="plan-price">$29<span style="font-size:22px">.99</span></div>
-      <div class="plan-period">в месяц</div>
-      <ul class="plan-features">
-        <li>Все 3 бюро (TU + EQ + EX)</li>
-        <li>Еженедельное обновление</li>
-        <li>FICO Score (реальный)</li>
-        <li>Dark Web Monitoring</li>
-        <li>Score Simulator</li>
-        <li>Dispute Hub (e-OSCAR)</li>
-        <li>ID Theft Insurance $1M</li>
-        <li>Mobile App</li>
-        <li>AI Credit Advisor</li>
-      </ul>
-    </div>
-    <div class="price-card">
-      <div class="plan-name">Family</div>
-      <div class="plan-price">$49<span style="font-size:22px">.99</span></div>
-      <div class="plan-period">в месяц</div>
-      <ul class="plan-features">
-        <li>Premium для 2–4 человек</li>
-        <li>Мониторинг детей</li>
-        <li>Общий семейный дашборд</li>
-        <li>Страховка на всю семью</li>
-        <li>Приоритетная поддержка</li>
-      </ul>
-    </div>
-  </div>
-
-  <div style="margin-top:40px">
-    <div class="section-label">Дополнительные источники дохода</div>
-    <div class="info-grid" style="margin-top:16px">
-      <div class="info-item">
-        <div class="info-item-title">💰 Lead Generation</div>
-        <div class="info-item-text">Продажа квалифицированных лидов банкам, ипотечным брокерам и кредитным картам. Самый прибыльный канал в нише — до $50–200 за лид.</div>
-      </div>
-      <div class="info-item">
-        <div class="info-item-title">🏢 White-Label B2B</div>
-        <div class="info-item-text">Продажа платформы под брендом другой компании. Ипотечные агентства, банки, HR-компании — все заинтересованы в кредитном мониторинге.</div>
-      </div>
-      <div class="info-item">
-        <div class="info-item-title">🔧 Credit Repair Services</div>
-        <div class="info-item-text">Платная услуга по улучшению кредитной истории через Dispute Hub. Высокомаржинальный сервис с хорошим LTV.</div>
-      </div>
-      <div class="info-item">
-        <div class="info-item-title">📊 Affiliate Marketing</div>
-        <div class="info-item-text">Партнёрские комиссии от рекомендаций кредитных карт, автокредитов, ипотек на основе кредитного профиля пользователя.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- LEGAL SECTION -->
-<section class="section">
-  <div class="section-label">Регуляторный ландшафт</div>
-  <h2 class="section-title">Юридические требования</h2>
-  <p class="section-desc">Работа с кредитными данными граждан США — один из самых строгих регуляторных ландшафтов в мире. Несоответствие ведёт к отключению от API и многомиллионным штрафам.</p>
-  <div class="info-grid">
-    <div class="info-item" style="border-color:rgba(79,143,255,0.2)">
-      <div class="info-item-title" style="color:var(--accent)">📘 FCRA — Fair Credit Reporting Act</div>
-      <div class="info-item-text">Фундаментальный закон. Требует письменного согласия пользователя ("Permissible Purpose") на каждый запрос отчёта. Ежегодный бесплатный отчёт для пользователя. Процедура оспаривания ошибок (30 дней на расследование).</div>
-    </div>
-    <div class="info-item" style="border-color:rgba(255,107,53,0.2)">
-      <div class="info-item-title" style="color:var(--accent4)">📙 GLBA — Gramm-Leach-Bliley Act</div>
-      <div class="info-item-text">Платформа классифицируется как финансовое учреждение. Требует назначения CISO, программы информационной безопасности, политик контроля доступа, шифрования данных и обучения сотрудников.</div>
-    </div>
-    <div class="info-item" style="border-color:rgba(0,212,170,0.2)">
-      <div class="info-item-title" style="color:var(--accent3)">📗 CCPA / CPRA — California Privacy</div>
-      <div class="info-item-text">Право пользователей на удаление данных, отказ от продажи информации третьим лицам, прозрачность использования. Применяется ко всем компаниям, обслуживающим жителей Калифорнии.</div>
-    </div>
-    <div class="info-item" style="border-color:rgba(255,209,102,0.2)">
-      <div class="info-item-title" style="color:var(--accent5)">📒 PCI DSS — Payment Security</div>
-      <div class="info-item-text">При работе с платёжными данными — обязательная сертификация. Запрет хранения CVV, токенизация номеров карт. Stripe берёт на себя большую часть PCI DSS-требований.</div>
-    </div>
-    <div class="info-item">
-      <div class="info-item-title">🔐 Data Residency — локализация данных</div>
-      <div class="info-item-text">Данные граждан США (SSN, кредитные отчёты) не должны физически передаваться за пределы американской юрисдикции. Офшорные разработчики — только через VDI без прямого доступа к данным.</div>
-    </div>
-    <div class="info-item">
-      <div class="info-item-title">🏢 SOC 2 Type II — Security Audit</div>
-      <div class="info-item-text">Независимый аудит по 5 критериям: безопасность, доступность, целостность, конфиденциальность, приватность. Обязательное условие для получения production-доступа от всех трёх бюро.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- BUDGET SECTION -->
-<section class="section" id="budget">
-  <div class="section-label">Финансовое планирование</div>
-  <h2 class="section-title">Бюджет запуска</h2>
-  <p class="section-desc">Ориентировочные затраты на первый год. Реальные цифры зависят от выбора прямой интеграции vs. агрегатора и географии команды разработки.</p>
-  <div style="border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card)">
-    <table class="budget-table">
+/* ─── RENDER: EDIT TABLE ─── */
+function renderEditTable(){
+  const sorted=getSortedForMonth(S.activeMonth);
+  const el=document.getElementById('editTableEl');
+  if(!sorted.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><div class="empty-txt">Нет сотрудников</div></div>';
+    return;
+  }
+  el.innerHTML=`
+    <table class="edit-tbl">
       <thead>
         <tr>
-          <th>Статья расходов</th>
-          <th>Описание</th>
-          <th>Стоимость</th>
+          <th>Сотрудник</th>
+          <th>Контракты (цель: ${TARGETS.contracts})</th>
+          <th>Сумма $ (цель: ${TARGETS.amount.toLocaleString('ru')})</th>
+          <th>Smart Credit (цель: ${TARGETS.smart})</th>
+          <th>Взв. балл</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Юридические услуги</td>
-          <td style="color:var(--text3);font-size:13px">Регистрация, FCRA/GLBA комплаенс, DUA соглашения, ToS/Privacy Policy</td>
-          <td>$10K – $30K</td>
-        </tr>
-        <tr>
-          <td>API доступ к бюро</td>
-          <td style="color:var(--text3);font-size:13px">Подписки агрегатора (Array/CRS) или прямые контракты. Per-user fee за активных пользователей</td>
-          <td>$15K – $50K</td>
-        </tr>
-        <tr>
-          <td>Разработка платформы</td>
-          <td style="color:var(--text3);font-size:13px">Бэкенд, фронтенд, мобильное приложение, интеграции, VDI-инфраструктура</td>
-          <td>$50K – $150K</td>
-        </tr>
-        <tr>
-          <td>Облачная инфраструктура</td>
-          <td style="color:var(--text3);font-size:13px">AWS/GCP, базы данных, CDN, мониторинг, резервное копирование</td>
-          <td>$2K – $5K/мес</td>
-        </tr>
-        <tr>
-          <td>SOC 2 Type II аудит</td>
-          <td style="color:var(--text3);font-size:13px">Независимый аудит безопасности. Обязателен для production-доступа к бюро</td>
-          <td>$20K – $50K</td>
-        </tr>
-        <tr>
-          <td>Маркетинг и запуск</td>
-          <td style="color:var(--text3);font-size:13px">SEO, PPC, социальные сети, партнёрские программы, PR</td>
-          <td>$10K – $30K</td>
-        </tr>
-        <tr>
-          <td>Страхование</td>
-          <td style="color:var(--text3);font-size:13px">Профессиональная ответственность + киберриски + ID Theft покрытие</td>
-          <td>$5K – $15K/год</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--text)">ИТОГО на старт (первый год)</td>
-          <td>$120K – $280K</td>
-        </tr>
+        ${sorted.map(emp=>{
+          const meta=getMeta(emp.id);
+          const col=meta.avatarColor||'#cc3333';
+          const init=(meta.name||'?').charAt(0).toUpperCase();
+          const sc=weightedScore(emp).toFixed(1);
+          const scCol=barColor(parseFloat(sc));
+          return `
+            <tr>
+              <td><div class="emp-name-cell">
+                <div class="mini-av" style="background:${col}18;color:${col}">${init}</div>
+                ${meta.name||'—'}
+              </div></td>
+              <td><input type="number" min="0" max="200" value="${emp.contracts}"
+                onchange="updateEmp('${emp.id}','contracts',this.value)"
+                onblur="updateEmp('${emp.id}','contracts',this.value)"></td>
+              <td><input type="number" min="0" max="9999999" step="100" value="${emp.amount}"
+                onchange="updateEmp('${emp.id}','amount',this.value)"
+                onblur="updateEmp('${emp.id}','amount',this.value)"></td>
+              <td><input type="number" min="0" max="200" value="${emp.smart}"
+                onchange="updateEmp('${emp.id}','smart',this.value)"
+                onblur="updateEmp('${emp.id}','smart',this.value)"></td>
+              <td style="color:${scCol};font-weight:700;font-size:13px">${sc}%${parseFloat(sc)>=100?' ✦':''}</td>
+              <td><button class="btn btn-danger btn-xs" onclick="confirmRemoveEmp('${emp.id}','${(meta.name||'?').replace(/'/g,"\\'")}')">✕</button></td>
+            </tr>`;
+        }).join('')}
       </tbody>
-    </table>
-  </div>
-  <div style="margin-top:20px;padding:20px 24px;background:rgba(79,143,255,0.06);border:1px solid rgba(79,143,255,0.2);border-radius:12px">
-    <p style="font-size:13px;color:var(--text2)">💡 <strong style="color:var(--text)">Экономия через агрегатор:</strong> использование Array или CRS вместо прямой интеграции экономит $30–80K на разработке адаптеров и ускоряет Time-to-Market с 12 до 6 месяцев. На начальном этапе — оптимальный выбор.</p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- TIMELINE -->
-<section class="section" id="timeline">
-  <div class="section-label">Дорожная карта</div>
-  <h2 class="section-title">12-месячный Timeline</h2>
-  <p class="section-desc">Последовательный план от регистрации компании до коммерческого запуска</p>
-  <div class="timeline-grid">
-    <div class="tl-card">
-      <div class="tl-months">Месяцы 1–3</div>
-      <div class="tl-title">Юридика и партнёрства</div>
-      <div class="tl-items">
-        <div class="tl-item">Регистрация LLC/C-Corp в США</div>
-        <div class="tl-item">Найм юриста по FCRA/GLBA</div>
-        <div class="tl-item">Назначение CISO</div>
-        <div class="tl-item">Переговоры с агрегаторами (Array, CRS)</div>
-        <div class="tl-item">Начало переговоров с бюро (прямой путь)</div>
-        <div class="tl-item">Разработка ToS, Privacy Policy</div>
-        <div class="tl-item">Настройка VDI инфраструктуры</div>
-      </div>
-    </div>
-    <div class="tl-card">
-      <div class="tl-months">Месяцы 4–6</div>
-      <div class="tl-title">Базовая разработка</div>
-      <div class="tl-items">
-        <div class="tl-item">Подписание контрактов с агрегатором</div>
-        <div class="tl-item">Настройка Sandbox API доступа</div>
-        <div class="tl-item">Разработка микросервисной архитектуры</div>
-        <div class="tl-item">PostgreSQL + Redis инфраструктура</div>
-        <div class="tl-item">Tri-merge алгоритм дедупликации</div>
-        <div class="tl-item">Базовый фронтенд дашборд</div>
-        <div class="tl-item">Stripe + Chargebee интеграция</div>
-      </div>
-    </div>
-    <div class="tl-card">
-      <div class="tl-months">Месяцы 7–9</div>
-      <div class="tl-title">Премиум-функции</div>
-      <div class="tl-items">
-        <div class="tl-item">e-OSCAR / Metro 2 интеграция (споры)</div>
-        <div class="tl-item">Score Simulator алгоритм</div>
-        <div class="tl-item">Dark Web Monitoring API</div>
-        <div class="tl-item">Mobile App разработка</div>
-        <div class="tl-item">AI Credit Advisor модуль</div>
-        <div class="tl-item">Real-time Alerts система</div>
-        <div class="tl-item">ID Theft Insurance партнёрство</div>
-      </div>
-    </div>
-    <div class="tl-card">
-      <div class="tl-months">Месяцы 10–12</div>
-      <div class="tl-title">Аудит и запуск</div>
-      <div class="tl-items">
-        <div class="tl-item">SOC 2 Type II аудит</div>
-        <div class="tl-item">Penetration Testing</div>
-        <div class="tl-item">Нагрузочное тестирование</div>
-        <div class="tl-item">Beta-запуск (закрытый)</div>
-        <div class="tl-item">Исправление багов по фидбеку</div>
-        <div class="tl-item">Публичный запуск MVP</div>
-        <div class="tl-item">Маркетинговая кампания</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- RISKS -->
-<section class="section">
-  <div class="section-label">Управление рисками</div>
-  <h2 class="section-title">Ключевые риски и митигация</h2>
-  <div class="risks-grid">
-    <div class="risk-card risk-high">
-      <div class="risk-icon">⚖</div>
-      <div>
-        <div class="risk-title">FCRA нарушения</div>
-        <div class="risk-desc">Штрафы до $1 000 за нарушение + уголовная ответственность. Получить данные без согласия — немедленный иск.</div>
-      </div>
-      <div class="risk-level">Высокий</div>
-    </div>
-    <div class="risk-card risk-high">
-      <div class="risk-icon">🔌</div>
-      <div>
-        <div class="risk-title">Отключение API бюро</div>
-        <div class="risk-desc">Нарушение условий DUA — немедленное прекращение доступа к данным. Вся платформа перестаёт работать.</div>
-      </div>
-      <div class="risk-level">Высокий</div>
-    </div>
-    <div class="risk-card risk-high">
-      <div class="risk-icon">💻</div>
-      <div>
-        <div class="risk-title">Утечка данных пользователей</div>
-        <div class="risk-desc">SSN, кредитные отчёты — ценнейшие данные для мошенников. Репутационный ущерб + штрафы + иски пользователей.</div>
-      </div>
-      <div class="risk-level">Высокий</div>
-    </div>
-    <div class="risk-card risk-med">
-      <div class="risk-icon">⏱</div>
-      <div>
-        <div class="risk-title">Задержка аккредитации</div>
-        <div class="risk-desc">Прямая интеграция с бюро может занять 12+ месяцев. Митигация — старт через API-агрегатор.</div>
-      </div>
-      <div class="risk-level">Средний</div>
-    </div>
-    <div class="risk-card risk-med">
-      <div class="risk-icon">💸</div>
-      <div>
-        <div class="risk-title">Высокий CAC</div>
-        <div class="risk-desc">Стоимость привлечения пользователя в финансовой нише исторически высока ($50–200). Нужны партнёрства и органический рост.</div>
-      </div>
-      <div class="risk-level">Средний</div>
-    </div>
-    <div class="risk-card risk-low">
-      <div class="risk-icon">🏢</div>
-      <div>
-        <div class="risk-title">Конкуренция с Credit Karma</div>
-        <div class="risk-desc">Бесплатная модель CK неуязвима ценой. Митигация — дифференциация через 3 бюро и реальные FICO скоры.</div>
-      </div>
-      <div class="risk-level">Низкий</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-logo">Credit<span style="color:var(--accent)">Core</span></div>
-  <p style="font-size:12px;color:var(--text3);margin-top:4px;margin-bottom:16px">Дорожная карта проекта · 2025–2026</p>
-  <p class="footer-note">Данный документ содержит конфиденциальную информацию о стратегии создания платформы кредитного мониторинга. Все данные основаны на анализе рынка, открытой документации кредитных бюро и опыте конкурентов.</p>
-  <p style="margin-top:24px;font-size:12px;color:var(--text3)">Equifax · Experian · TransUnion · Array · CRS · MeridianLink · Bloom Credit · Stripe · Chargebee · e-OSCAR</p>
-</footer>
-
-<script>
-// Intersection Observer for scroll animations
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => {
-        entry.target.classList.add('visible');
-      }, entry.target.dataset.delay || 0);
-    }
-  });
-}, { threshold: 0.1 });
-
-// Observe all animated elements
-document.querySelectorAll('.phase, .bureau-card, .tech-card, .price-card, .comp-card, .tl-card, .risk-card, .alt-card, .wide-card').forEach((el, i) => {
-  const delay = (i % 4) * 80;
-  el.dataset.delay = delay;
-  observer.observe(el);
-});
-
-// Counter animation for stats
-function animateCounter(el, target, prefix = '', suffix = '') {
-  const duration = 1500;
-  const start = Date.now();
-  const isFloat = target % 1 !== 0;
-  
-  function update() {
-    const elapsed = Date.now() - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const value = target * eased;
-    el.textContent = prefix + (isFloat ? value.toFixed(1) : Math.floor(value)) + suffix;
-    if (progress < 1) requestAnimationFrame(update);
-  }
-  requestAnimationFrame(update);
+    </table>`;
 }
 
-// Animate stats when hero is visible
-setTimeout(() => {
-  const statVals = document.querySelectorAll('.stat-val');
-  // these are text-based, just add a fade-in effect
-}, 600);
+/* ─── RENDER: FULL ─── */
+function render(){
+  renderHeader();
+  renderLeaderboard();
+  renderEmpGrid();
+  if(isAuthed()){
+    renderTeamStats();
+    renderMonthSelect();
+    renderEditTable();
+  }
+}
 
-// Smooth active nav
-const navLinks = document.querySelectorAll('.nav-links a');
-const sections = document.querySelectorAll('section[id]');
+/* ─── ACTIONS: DATA ─── */
+function updateEmp(id,field,rawVal){
+  const val=Math.max(0,parseFloat(rawVal)||0);
+  const emps=getMonthEmps(S.activeMonth);
+  const emp=emps.find(e=>e.id===id);
+  if(!emp) return;
+  emp[field]=val;
+  save();
+  renderLeaderboard();
+  renderEmpGrid();
+  renderTeamStats();
+  renderEditTable();
+  const card=document.getElementById(`card-${id}`);
+  if(card){ card.classList.remove('pulse-upd'); void card.offsetWidth; card.classList.add('pulse-upd'); }
+}
 
-const navObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navLinks.forEach(link => {
-        link.style.color = '';
-        if (link.getAttribute('href') === '#' + entry.target.id) {
-          link.style.color = 'var(--text)';
-        }
-      });
-    }
+function handleMonthChange(mk){
+  S.activeMonth=mk;
+  save();
+  render();
+}
+
+function showCreateMonthDialog(){
+  showPrompt('Создать / открыть месяц','Ключ месяца (ГГГГ-ММ):',nowKey(),val=>{
+    if(!/^\d{4}-\d{2}$/.test(val)){toast('Формат: ГГГГ-ММ (например 2026-05)','err');return;}
+    if(!S.months[val]) S.months[val]={employees:[]};
+    S.activeMonth=val;
+    save(); render();
+    toast(`Переключено: ${keyToLabel(val)}`,'ok');
   });
-}, { threshold: 0.3 });
+}
 
-sections.forEach(s => navObserver.observe(s));
+/* ─── ACTIONS: EMPLOYEES ─── */
+function openAddEmployee(){
+  document.getElementById('addEmpOverlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('newEmpName').focus(),80);
+}
+function closeAddEmployee(){
+  document.getElementById('addEmpOverlay').classList.add('hidden');
+  document.getElementById('newEmpName').value='';
+}
+function confirmAddEmployee(){
+  const name=document.getElementById('newEmpName').value.trim();
+  if(!name){toast('Введите имя','err');return;}
+  const id=uid();
+  const color=COLORS[S.employeesMeta.length%COLORS.length];
+  S.employeesMeta.push({id,name,avatarColor:color});
+  Object.keys(S.months).forEach(mk=>{
+    if(!S.months[mk].employees) S.months[mk].employees=[];
+    if(!S.months[mk].employees.find(e=>e.id===id))
+      S.months[mk].employees.push({id,contracts:0,amount:0,smart:0});
+  });
+  save(); closeAddEmployee(); render();
+  toast(`${name} добавлен(а) в команду`,'ok');
+}
+function confirmRemoveEmp(id,name){
+  showConfirm(`Удалить ${name}?`,'Данные этого сотрудника будут удалены из всех месяцев. Необратимо.',()=>{
+    S.employeesMeta=S.employeesMeta.filter(e=>e.id!==id);
+    Object.values(S.months).forEach(m=>{if(m.employees)m.employees=m.employees.filter(e=>e.id!==id);});
+    save(); render();
+    toast(`${name} удалён(а)`,'inf');
+  });
+}
+
+/* ─── ACTIONS: ADMIN TOGGLE ─── */
+function toggleAdmin(){
+  adminVisible=!adminVisible;
+  const sec=document.getElementById('adminSection');
+  sec.style.display=adminVisible?'':'none';
+  document.getElementById('toggleAdminBtn').textContent=adminVisible?'🎬 Презентация':'🔓 Показать панель';
+}
+
+function confirmResetMonth(){
+  showConfirm(`Сбросить ${keyToLabel(S.activeMonth)}?`,'Показатели всех сотрудников за этот месяц обнулятся.',()=>{
+    getMonthEmps(S.activeMonth).forEach(e=>{e.contracts=0;e.amount=0;e.smart=0;});
+    save(); render();
+    toast('Данные месяца сброшены','inf');
+  });
+}
+
+/* ─── EXPORT / IMPORT ─── */
+function doExportCSV(){
+  const sorted=getSortedForMonth(S.activeMonth);
+  const ml=keyToLabel(S.activeMonth);
+  const ts=teamStats(S.activeMonth);
+  const rows=[
+    ['Месяц','Место','Сотрудник','Контракты','% Контракты','Сумма ($)','% Сумма','Smart Credit','% Smart Credit','Взв. балл (0.35/0.50/0.15)'],
+    ...sorted.map((emp,i)=>{
+      const cp=Math.min(pct(emp.contracts,TARGETS.contracts),100).toFixed(1);
+      const ap=Math.min(pct(emp.amount,TARGETS.amount),100).toFixed(1);
+      const sp=Math.min(pct(emp.smart,TARGETS.smart),100).toFixed(1);
+      const sc=(+cp*WEIGHTS.contracts + +ap*WEIGHTS.amount + +sp*WEIGHTS.smart).toFixed(1);
+      return [ml,i+1,getMeta(emp.id).name||'—',emp.contracts,cp+'%',emp.amount,ap+'%',emp.smart,sp+'%',sc+'%'];
+    }),
+    [],
+    ['','','ИТОГО КОМАНДА',ts.contracts.v,((ts.contracts.v/ts.contracts.t)*100).toFixed(1)+'%',
+     ts.amount.v,((ts.amount.v/ts.amount.t)*100).toFixed(1)+'%',
+     ts.smart.v,((ts.smart.v/ts.smart.t)*100).toFixed(1)+'%','']
+  ];
+  const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${c}"`).join(';')).join('\n');
+  dlBlob(csv,`report_${S.activeMonth}.csv`,'text/csv;charset=utf-8;');
+  toast('Отчёт экспортирован','ok');
+}
+function doExportBackup(){
+  dlBlob(JSON.stringify(S,null,2),`backup_${new Date().toISOString().slice(0,10)}.json`,'application/json');
+  toast('Бэкап сохранён','ok');
+}
+function doImportBackup(ev){
+  const file=ev.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      showConfirm('Импортировать бэкап?','Текущие данные будут заменены.',()=>{
+        S=parsed; save(); render();
+        toast('Бэкап восстановлен','ok');
+      });
+    }catch{toast('Ошибка файла','err');}
+  };
+  reader.readAsText(file);
+  ev.target.value='';
+}
+function dlBlob(c,fn,m){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([c],{type:m}));
+  a.download=fn; a.click();
+}
+
+/* ─── ANALYTICS ─── */
+function openAnalytics(){
+  document.getElementById('analyticsOverlay').classList.remove('hidden');
+  populateAnalyticsFilters();
+  renderAnalytics();
+}
+function closeAnalytics(){
+  document.getElementById('analyticsOverlay').classList.add('hidden');
+  Object.values(aCharts).forEach(c=>c.destroy());
+  aCharts={};
+}
+function populateAnalyticsFilters(){
+  const months=[...new Set([...Object.keys(S.months)])].sort();
+  if(!months.length) months.push(S.activeMonth);
+  const opts=months.map(m=>`<option value="${m}">${keyToLabel(m)}</option>`).join('');
+  document.getElementById('aFrom').innerHTML=opts;
+  document.getElementById('aTo').innerHTML=opts;
+  document.getElementById('aFrom').value=months[0];
+  document.getElementById('aTo').value=months[months.length-1];
+  document.getElementById('aEmp').innerHTML='<option value="">Все сотрудники</option>'+
+    S.employeesMeta.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+}
+function renderAnalytics(){
+  const from=document.getElementById('aFrom').value;
+  const to=document.getElementById('aTo').value;
+  const empId=document.getElementById('aEmp').value;
+  const period=Object.keys(S.months).sort().filter(m=>m>=from&&m<=to);
+  if(!period.length) return;
+  const labels=period.map(keyToLabel);
+  let cData,aData,sData;
+  if(empId){
+    cData=period.map(m=>S.months[m]?.employees?.find(e=>e.id===empId)?.contracts||0);
+    aData=period.map(m=>S.months[m]?.employees?.find(e=>e.id===empId)?.amount||0);
+    sData=period.map(m=>S.months[m]?.employees?.find(e=>e.id===empId)?.smart||0);
+  } else {
+    cData=period.map(m=>(S.months[m]?.employees||[]).reduce((s,e)=>s+e.contracts,0));
+    aData=period.map(m=>(S.months[m]?.employees||[]).reduce((s,e)=>s+e.amount,0));
+    sData=period.map(m=>(S.months[m]?.employees||[]).reduce((s,e)=>s+e.smart,0));
+  }
+  const cOpts={
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#7a8090',font:{family:'Inter',size:12}}}},
+    scales:{
+      x:{ticks:{color:'#7a8090',font:{family:'Inter'}},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#7a8090',font:{family:'Inter'}},grid:{color:'rgba(255,255,255,.04)'}}
+    }
+  };
+  if(aCharts.c){aCharts.c.destroy();}
+  if(aCharts.a){aCharts.a.destroy();}
+  aCharts.c=new Chart(document.getElementById('chartContracts'),{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Контракты',data:cData,backgroundColor:'rgba(204,51,51,.55)',borderColor:'#cc3333',borderWidth:2,borderRadius:6},
+      {label:'Smart Credit',data:sData,backgroundColor:'rgba(68,200,200,.3)',borderColor:'#44cccc',borderWidth:2,borderRadius:6}
+    ]},
+    options:{...cOpts,plugins:{...cOpts.plugins,title:{display:true,text:'Контракты и Smart Credit',color:'#eef0f6',font:{size:13,family:'Inter',weight:'800'}}}}
+  });
+  aCharts.a=new Chart(document.getElementById('chartAmount'),{
+    type:'line',
+    data:{labels,datasets:[{
+      label:'Сумма ($)',data:aData,
+      backgroundColor:'rgba(255,215,0,.1)',borderColor:'#ffd700',
+      borderWidth:2,pointBackgroundColor:'#ffd700',pointRadius:5,fill:true,tension:.35
+    }]},
+    options:{...cOpts,plugins:{...cOpts.plugins,title:{display:true,text:'Динамика суммы контрактов',color:'#eef0f6',font:{size:13,family:'Inter',weight:'800'}}}}
+  });
+  const agg={};
+  S.employeesMeta.forEach(m=>{agg[m.id]={name:m.name,contracts:0,amount:0,smart:0};});
+  period.forEach(mk=>{
+    (S.months[mk]?.employees||[]).forEach(e=>{
+      if(agg[e.id]){agg[e.id].contracts+=e.contracts;agg[e.id].amount+=e.amount;agg[e.id].smart+=e.smart;}
+    });
+  });
+  const best=sortEmps(Object.values(agg));
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('bestTableEl').innerHTML=`
+    <table class="best-tbl">
+      <thead><tr><th>#</th><th>Сотрудник</th><th>Контракты</th><th>Сумма</th><th>Smart Credit</th></tr></thead>
+      <tbody>${best.map((e,i)=>`
+        <tr>
+          <td>${medals[i]||i+1}</td>
+          <td><b>${e.name}</b></td>
+          <td>${e.contracts}</td>
+          <td>${fmtAmt(e.amount)}</td>
+          <td>${e.smart}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+/* ─── UI HELPERS ─── */
+function toast(msg,type='inf'){
+  const icons={ok:'✓',err:'✕',inf:'ℹ'};
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;
+  document.body.appendChild(el);
+  setTimeout(()=>{ el.style.animation='none'; el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),350); },3000);
+}
+function showConfirm(title,text,onOk){
+  const ov=document.createElement('div');
+  ov.className='confirm-overlay';
+  ov.innerHTML=`
+    <div class="confirm-box">
+      <div class="confirm-ttl">${title}</div>
+      <div class="confirm-txt">${text}</div>
+      <div class="confirm-acts">
+        <button class="btn btn-ghost btn-sm" onclick="this.closest('.confirm-overlay').remove()">Отмена</button>
+        <button class="btn btn-danger btn-sm" id="_cok">Подтвердить</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#_cok').onclick=()=>{ov.remove();onOk();};
+}
+function showPrompt(title,lbl,def,onOk){
+  const ov=document.createElement('div');
+  ov.className='confirm-overlay';
+  ov.innerHTML=`
+    <div class="confirm-box">
+      <div class="confirm-ttl">${title}</div>
+      <div class="f-group" style="margin-top:12px">
+        <label class="f-lbl">${lbl}</label>
+        <input type="text" id="_pi" class="f-input" value="${def}">
+      </div>
+      <div class="confirm-acts">
+        <button class="btn btn-ghost btn-sm" onclick="this.closest('.confirm-overlay').remove()">Отмена</button>
+        <button class="btn btn-primary btn-sm" id="_pok">OK</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#_pok').onclick=()=>{const v=ov.querySelector('#_pi').value;ov.remove();onOk(v);};
+  setTimeout(()=>ov.querySelector('#_pi').focus(),80);
+}
+
+/* close on backdrop */
+document.getElementById('analyticsOverlay').addEventListener('click',function(e){if(e.target===this)closeAnalytics();});
+document.getElementById('addEmpOverlay').addEventListener('click',function(e){if(e.target===this)closeAddEmployee();});
+document.getElementById('loginOverlay').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+
+/* ─── INIT ─── */
+load();
+render();
+updateAuthUI();
 </script>
 </body>
 </html>
